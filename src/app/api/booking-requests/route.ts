@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
 import { getAuthFromCookie } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
@@ -66,6 +67,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await supabase
       .from('booking_request')
       .insert({
+        id: randomUUID(),
         nombre: String(nombre).trim(),
         celular: String(celular).trim(),
         email: String(email).trim().toLowerCase(),
@@ -81,13 +83,15 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('BookingRequest POST error:', error)
-      return NextResponse.json({ error: 'Error al enviar solicitud' }, { status: 500 })
+      const msg = error?.message || error?.code || 'Error desconocido'
+      return NextResponse.json({ error: `Error al enviar solicitud: ${msg}` }, { status: 500 })
     }
 
     return NextResponse.json({ success: true, id: data?.id })
   } catch (e) {
     console.error('BookingRequest POST error:', e)
-    return NextResponse.json({ error: 'Error al enviar solicitud' }, { status: 500 })
+    const msg = e instanceof Error ? e.message : 'Error desconocido'
+    return NextResponse.json({ error: `Error al enviar solicitud: ${msg}` }, { status: 500 })
   }
 }
 
