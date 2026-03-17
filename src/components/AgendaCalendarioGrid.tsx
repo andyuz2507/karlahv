@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useLayoutEffect } from 'react'
 
 const TIME_SLOTS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00']
 const DAY_LABELS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
@@ -215,50 +215,58 @@ function ReservaFormulario({
     }
   }
 
+  const inputClass = 'w-full px-3 py-2 text-base rounded-lg border border-berry/20 focus:ring-2 focus:ring-berry/30'
+
+  useLayoutEffect(() => {
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = prev }
+  }, [])
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-charcoal/50">
-      <div className="bg-white rounded-2xl shadow-soft-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6 border-b border-berry/10 flex justify-between items-center">
-          <h3 className="font-serif text-xl font-bold text-charcoal">Solicitar reserva: {slot.label}</h3>
-          <button onClick={onClose} className="text-charcoal-light hover:text-charcoal text-2xl">×</button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-charcoal/50 overflow-y-auto overflow-x-hidden">
+      <div className="bg-white rounded-xl shadow-soft-lg w-full max-w-[min(28rem,calc(100vw-2rem))] my-auto shrink-0 touch-manipulation">
+        <div className="p-4 border-b border-berry/10 flex justify-between items-center gap-2">
+          <h3 className="font-serif text-base font-bold text-charcoal truncate">Solicitar reserva: {slot.label}</h3>
+          <button onClick={onClose} className="text-charcoal-light hover:text-charcoal text-xl shrink-0">×</button>
         </div>
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-4 space-y-3">
           <div>
-            <label className="block text-sm font-medium text-charcoal mb-1">Nombre *</label>
-            <input type="text" required value={form.nombre} onChange={(e) => setForm({ ...form, nombre: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-berry/20 focus:ring-2 focus:ring-berry/30" />
+            <label className="block text-sm font-medium text-charcoal mb-0.5">Nombre *</label>
+            <input type="text" required value={form.nombre} onChange={(e) => setForm({ ...form, nombre: e.target.value })} className={inputClass} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-charcoal mb-1">Celular *</label>
-            <input type="tel" required value={form.celular} onChange={(e) => setForm({ ...form, celular: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-berry/20 focus:ring-2 focus:ring-berry/30" />
+            <label className="block text-sm font-medium text-charcoal mb-0.5">Celular *</label>
+            <input type="tel" required value={form.celular} onChange={(e) => setForm({ ...form, celular: e.target.value })} className={inputClass} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-charcoal mb-1">Correo *</label>
-            <input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-berry/20 focus:ring-2 focus:ring-berry/30" />
+            <label className="block text-sm font-medium text-charcoal mb-0.5">Correo *</label>
+            <input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={inputClass} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-charcoal mb-1">¿Para quién es la terapia? *</label>
-            <input type="text" required placeholder="Ej: mi hijo, yo mismo" value={form.paraQuien} onChange={(e) => setForm({ ...form, paraQuien: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-berry/20 focus:ring-2 focus:ring-berry/30" />
+            <label className="block text-sm font-medium text-charcoal mb-0.5">¿Para quién es la terapia? *</label>
+            <input type="text" required placeholder="Ej: mi hijo, yo mismo" value={form.paraQuien} onChange={(e) => setForm({ ...form, paraQuien: e.target.value })} className={inputClass} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-charcoal mb-1">Breve descripción *</label>
-            <textarea required rows={3} placeholder="Cuéntanos brevemente qué te motiva" value={form.descripcion} onChange={(e) => setForm({ ...form, descripcion: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-berry/20 focus:ring-2 focus:ring-berry/30" />
+            <label className="block text-sm font-medium text-charcoal mb-0.5">Breve descripción *</label>
+            <textarea required rows={2} placeholder="Cuéntanos brevemente qué te motiva" value={form.descripcion} onChange={(e) => setForm({ ...form, descripcion: e.target.value })} className={inputClass} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-charcoal mb-1">Modalidad *</label>
-            <select value={form.modalidad} onChange={(e) => setForm({ ...form, modalidad: e.target.value as 'fisico' | 'remoto' })} className="w-full px-4 py-3 rounded-xl border border-berry/20">
+            <label className="block text-sm font-medium text-charcoal mb-0.5">Modalidad *</label>
+            <select value={form.modalidad} onChange={(e) => setForm({ ...form, modalidad: e.target.value as 'fisico' | 'remoto' })} className={inputClass}>
               <option value="fisico">Presencial</option>
               <option value="remoto">Remoto</option>
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-charcoal mb-1">Temporalidad *</label>
-            <select value={form.temporalidad} onChange={(e) => setForm({ ...form, temporalidad: e.target.value as 'semanal' | 'quincenal' })} className="w-full px-4 py-3 rounded-xl border border-berry/20">
+            <label className="block text-sm font-medium text-charcoal mb-0.5">Temporalidad *</label>
+            <select value={form.temporalidad} onChange={(e) => setForm({ ...form, temporalidad: e.target.value as 'semanal' | 'quincenal' })} className={inputClass}>
               <option value="semanal">Semanal</option>
               <option value="quincenal">Quincenal</option>
             </select>
           </div>
           {error && <p className="text-red-600 text-sm">{error}</p>}
-          <button type="submit" disabled={sending} className="w-full py-3 rounded-xl bg-berry text-white font-semibold hover:bg-berry-dark disabled:opacity-50">
+          <button type="submit" disabled={sending} className="w-full py-2.5 rounded-lg bg-berry text-white font-semibold hover:bg-berry-dark disabled:opacity-50 text-sm">
             {sending ? 'Enviando...' : 'Enviar solicitud'}
           </button>
         </form>
