@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 const DAYS = [
   { value: 0, label: 'Domingo' },
@@ -25,30 +25,42 @@ type Slot = {
   biweekGroup: number | null
 }
 
+const emptySlot = () => ({
+  dayOfWeek: 1,
+  startTime: '09:00',
+  endTime: '10:00',
+  frequency: 'weekly' as 'weekly' | 'biweekly',
+  biweekGroup: 0,
+})
+
 export function AgendaDisponibilidadEditor() {
   const [slots, setSlots] = useState<Slot[]>([])
   const [loading, setLoading] = useState(true)
   const [adding, setAdding] = useState(false)
-  const [newSlot, setNewSlot] = useState({
-    dayOfWeek: 1,
-    startTime: '09:00',
-    endTime: '10:00',
-    frequency: 'weekly' as 'weekly' | 'biweekly',
-    biweekGroup: 0,
-  })
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editSlot, setEditSlot] = useState(emptySlot())
+  const [newSlot, setNewSlot] = useState(emptySlot())
 
-  useEffect(() => {
-    fetch('/api/availability')
+  const loadSlots = useCallback(() => {
+    return fetch('/api/availability', { credentials: 'include' })
       .then((r) => r.json())
-      .then((data) => setSlots(Array.isArray(data) ? data : data.slots || []))
+      .then((data) => {
+        const list = Array.isArray(data) ? data : data.slots || []
+        setSlots(list.map((s: Slot) => ({ ...s, biweekGroup: s.biweekGroup ?? 0 })))
+      })
       .finally(() => setLoading(false))
   }, [])
+
+  useEffect(() => {
+    loadSlots()
+  }, [loadSlots])
 
   const addSlot = async () => {
     setAdding(true)
     try {
       const res = await fetch('/api/availability', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...newSlot,
@@ -57,18 +69,70 @@ export function AgendaDisponibilidadEditor() {
       })
       if (res.ok) {
         const created = await res.json()
-        setSlots((s) => [...s, created])
+        setSlots((s) => [...s, { ...created, biweekGroup: created.biweekGroup ?? 0 }])
+        setNewSlot(emptySlot())
+      } else {
+        const err = await res.json()
+        alert(err.error || 'Error al guardar')
       }
     } finally {
       setAdding(false)
     }
   }
 
-  const removeSlot = async (id: string) => {
+  const updateSlot = async (id: string, payload: Omit<Slot, 'id'>) => {
     try {
-      const res = await fetch(`/api/availability?id=${id}`, { method: 'DELETE' })
-      if (res.ok) setSlots((s) => s.filter((x) => x.id !== id))
-    } catch {}
+      const res = await fetch('/api/availability', {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id,
+          ...payload,
+          biweekGroup: payload.frequency === 'biweekly' ? payload.biweekGroup : undefined,
+        }),
+      })
+      if (res.ok) {
+        const updated = await res.json()
+        setSlots((s) => s.map((x) => (x.id === id ? { ...updated, biweekGroup: updated.biweekGroup ?? 0 } : x)))
+        setEditingId(null)
+      } else {
+        const err = await res.json()
+        alert(err.error || 'Error al actualizar')
+      }
+    } catch {
+      alert('Error de conexión')
+    }
+  }
+
+  const removeSlot = async (id: string) => {
+    if (!confirm('¿Eliminar este espacio?')) return
+    try {
+      const res = await fetch(`/api/availability?id=${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      })
+      if (res.ok) {
+        setSlots((s) => s.filter((x) => x.id !== id))
+        if (editingId === id) setEditingId(null)
+      } else {
+        const err = await res.json()
+        alert(err.error || 'Error al eliminar')
+      }
+    } catch {
+      alert('Error de conexión')
+    }
+  }
+
+  const startEdit = (s: Slot) => {
+    setEditingId(s.id)
+    setEditSlot({
+      dayOfWeek: s.dayOfWeek,
+      startTime: s.startTime,
+      endTime: s.endTime,
+      frequency: s.frequency as 'weekly' | 'biweekly',
+      biweekGroup: s.biweekGroup ?? 0,
+    })
   }
 
   if (loading) return <p className="text-charcoal-light">Cargando...</p>
@@ -77,6 +141,9 @@ export function AgendaDisponibilidadEditor() {
     <div className="space-y-8">
       <div className="p-6 rounded-2xl bg-white border border-berry/10">
         <h3 className="font-serif text-lg font-bold text-charcoal mb-4">Añadir espacio disponible</h3>
+        <p className="text-sm text-charcoal-light mb-4">
+          Los espacios que añadas aquí se guardan y aparecen en verde en el calendario público.
+        </p>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <label className="block text-sm font-medium text-charcoal mb-1">Día</label>
@@ -150,6 +217,9 @@ export function AgendaDisponibilidadEditor() {
 
       <div className="p-6 rounded-2xl bg-white border border-berry/10">
         <h3 className="font-serif text-lg font-bold text-charcoal mb-4">Espacios configurados</h3>
+        <p className="text-sm text-charcoal-light mb-4">
+          Estos espacios aparecen en verde en el calendario de la página de agenda y en la home.
+        </p>
         {slots.length === 0 ? (
           <p className="text-charcoal-light">No hay espacios configurados. Añade uno arriba.</p>
         ) : (
@@ -157,20 +227,83 @@ export function AgendaDisponibilidadEditor() {
             {slots.map((s) => (
               <li
                 key={s.id}
-                className="flex items-center justify-between py-2 px-4 rounded-lg bg-cream/50"
+                className="flex flex-wrap items-center justify-between gap-2 py-2 px-4 rounded-lg bg-cream/50"
               >
-                <span>
-                  {DAYS.find((d) => d.value === s.dayOfWeek)?.label} {s.startTime}-{s.endTime}{' '}
-                  <span className="text-charcoal-light text-sm">
-                    ({s.frequency === 'biweekly' ? 'quincenal' : 'semanal'})
-                  </span>
-                </span>
-                <button
-                  onClick={() => removeSlot(s.id)}
-                  className="text-red-600 hover:underline text-sm"
-                >
-                  Eliminar
-                </button>
+                {editingId === s.id ? (
+                  <div className="flex flex-wrap items-center gap-2 w-full">
+                    <select
+                      value={editSlot.dayOfWeek}
+                      onChange={(e) => setEditSlot({ ...editSlot, dayOfWeek: Number(e.target.value) })}
+                      className="px-2 py-1.5 rounded border border-berry/20 text-sm"
+                    >
+                      {DAYS.map((d) => (
+                        <option key={d.value} value={d.value}>{d.label}</option>
+                      ))}
+                    </select>
+                    <select
+                      value={editSlot.startTime}
+                      onChange={(e) => setEditSlot({ ...editSlot, startTime: e.target.value })}
+                      className="px-2 py-1.5 rounded border border-berry/20 text-sm"
+                    >
+                      {TIME_SLOTS.map((t) => (
+                        <option key={t} value={t}>{t}</option>
+                      ))}
+                    </select>
+                    <span className="text-charcoal-light">-</span>
+                    <select
+                      value={editSlot.endTime}
+                      onChange={(e) => setEditSlot({ ...editSlot, endTime: e.target.value })}
+                      className="px-2 py-1.5 rounded border border-berry/20 text-sm"
+                    >
+                      {TIME_SLOTS.map((t) => (
+                        <option key={t} value={t}>{t}</option>
+                      ))}
+                    </select>
+                    <select
+                      value={editSlot.frequency}
+                      onChange={(e) => setEditSlot({ ...editSlot, frequency: e.target.value as 'weekly' | 'biweekly' })}
+                      className="px-2 py-1.5 rounded border border-berry/20 text-sm"
+                    >
+                      <option value="weekly">Semanal</option>
+                      <option value="biweekly">Quincenal</option>
+                    </select>
+                    <button
+                      onClick={() => updateSlot(s.id, editSlot)}
+                      className="px-3 py-1.5 rounded-lg bg-berry text-white text-sm font-medium"
+                    >
+                      Guardar
+                    </button>
+                    <button
+                      onClick={() => setEditingId(null)}
+                      className="px-3 py-1.5 rounded-lg border border-berry/20 text-charcoal text-sm"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <span>
+                      {DAYS.find((d) => d.value === s.dayOfWeek)?.label} {s.startTime}-{s.endTime}{' '}
+                      <span className="text-charcoal-light text-sm">
+                        ({s.frequency === 'biweekly' ? 'quincenal' : 'semanal'})
+                      </span>
+                    </span>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => startEdit(s)}
+                        className="text-berry hover:underline text-sm font-medium"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={() => removeSlot(s.id)}
+                        className="text-red-600 hover:underline text-sm"
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  </>
+                )}
               </li>
             ))}
           </ul>

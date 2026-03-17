@@ -1,3 +1,12 @@
+const HOURS = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00']
+
+function hoursBetween(start: string, end: string): string[] {
+  const si = HOURS.indexOf(start)
+  const ei = HOURS.indexOf(end)
+  if (si < 0 || ei <= si) return [start]
+  return HOURS.slice(si, ei)
+}
+
 /** Calcula los espacios disponibles para una semana dada */
 export function getAvailableSlotsForWeek(
   slots: { dayOfWeek: number; startTime: string; endTime: string; frequency: string; biweekGroup: number | null }[],
@@ -24,11 +33,14 @@ export function getAvailableSlotsForWeek(
       const dayLabel = DAYS[dayOfWeek]
       const monthDay = date.getDate()
       const month = MONTHS[date.getMonth()]
-      result.push({
-        date: dateStr,
-        time: slot.startTime,
-        label: `${dayLabel} ${monthDay} ${month} ${slot.startTime}`,
-      })
+      const times = hoursBetween(slot.startTime, slot.endTime)
+      for (const time of times) {
+        result.push({
+          date: dateStr,
+          time,
+          label: `${dayLabel} ${monthDay} ${month} ${time}`,
+        })
+      }
     }
   }
 

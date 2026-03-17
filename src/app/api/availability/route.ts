@@ -51,7 +51,18 @@ export async function GET(request: NextRequest) {
       const m = (parts[1] || new Date().getMonth() + 1) - 1
       const day = parts[2] || 1
       const weekStart = getWeekStart(new Date(y, m, day))
-      const available = getAvailableSlotsForWeek(slots, weekStart)
+      let available = getAvailableSlotsForWeek(slots, weekStart)
+
+      // Excluir slots ya reservados (booking_request)
+      const { data: bookings } = await supabase
+        .from('booking_request')
+        .select('slot_date, slot_time')
+        .in('status', ['pendiente', 'confirmada'])
+      const bookedSet = new Set(
+        (bookings || []).map((b: { slot_date: string; slot_time: string }) => `${b.slot_date}-${b.slot_time}`)
+      )
+      available = available.filter((a) => !bookedSet.has(`${a.date}-${a.time}`))
+
       return NextResponse.json({ slots, available })
     }
 
@@ -93,10 +104,50 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Error al crear espacio' }, { status: 500 })
     }
 
-    return NextResponse.json({ id: data.id, dayOfWeek: data.day_of_week, startTime: data.start_time, endTime: data.end_time, frequency: data.frequency, biweekGroup: data.biweek_group })
+    return NextResponse.json(toSlot(data as SlotRow))
   } catch (e) {
     console.error('Availability POST error:', e)
     return NextResponse.json({ error: 'Error al crear espacio' }, { status: 500 })
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  const auth = await getAuthFromCookie()
+  if (!auth) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+
+  if (!supabase) return NextResponse.json({ error: 'Configuración incompleta' }, { status: 500 })
+
+  try {
+    const body = await request.json()
+    const { id, dayOfWeek, startTime, endTime, frequency, biweekGroup } = body
+
+    if (!id) return NextResponse.json({ error: 'ID requerido' }, { status: 400 })
+    if (dayOfWeek === undefined || !startTime || !endTime || !frequency) {
+      return NextResponse.json({ error: 'Faltan campos requeridos' }, { status: 400 })
+    }
+
+    const { data, error } = await supabase
+      .from('availability_slot')
+      .update({
+        day_of_week: Number(dayOfWeek),
+        start_time: String(startTime),
+        end_time: String(endTime),
+        frequency: frequency === 'biweekly' ? 'biweekly' : 'weekly',
+        biweek_group: frequency === 'biweekly' && biweekGroup !== undefined ? Number(biweekGroup) : null,
+      })
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Availability PUT error:', error)
+      return NextResponse.json({ error: 'Error al actualizar' }, { status: 500 })
+    }
+
+    return NextResponse.json(toSlot(data as SlotRow))
+  } catch (e) {
+    console.error('Availability PUT error:', e)
+    return NextResponse.json({ error: 'Error al actualizar' }, { status: 500 })
   }
 }
 
