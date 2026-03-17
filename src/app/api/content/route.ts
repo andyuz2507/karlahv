@@ -10,6 +10,7 @@ const VALID_KEYS: ContentKeys[] = [
   'cursos',
   'agenda',
   'contacto',
+  'pageVisibility',
 ]
 
 export async function GET() {

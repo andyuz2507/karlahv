@@ -2,18 +2,20 @@
 
 import Link from 'next/link'
 import { NewsletterForm } from './NewsletterForm'
+import type { PageVisibility } from '@/lib/get-site-data'
 
-const footerLinks = [
-  { href: '/sobre-mi', label: 'Sobre mí' },
-  { href: '/servicios', label: 'Servicios' },
-  { href: '/recursos-y-cursos', label: 'Recursos y cursos' },
-  { href: '/comunidad', label: 'Comunidad' },
-  { href: '/agenda', label: 'Agenda' },
-  { href: '/contacto', label: 'Contacto' },
-  { href: '/politica-privacidad', label: 'Privacidad' },
+const footerLinksConfig = [
+  { href: '/sobre-mi', label: 'Sobre mí', key: 'sobreMi' as const },
+  { href: '/servicios', label: 'Servicios', key: 'servicios' as const },
+  { href: '/recursos-y-cursos', label: 'Recursos y cursos', key: 'recursosCursos' as const },
+  { href: '/comunidad', label: 'Comunidad', key: 'comunidad' as const },
+  { href: '/agenda', label: 'Agenda', key: 'agenda' as const },
+  { href: '/contacto', label: 'Contacto', key: 'contacto' as const },
+  { href: '/politica-privacidad', label: 'Privacidad', key: 'politicaPrivacidad' as const },
 ]
 
-export function Footer() {
+export function Footer({ pageVisibility }: { pageVisibility: PageVisibility }) {
+  const footerLinks = footerLinksConfig.filter((l) => pageVisibility[l.key])
   return (
     <footer className="bg-berry text-white">
       <div className="max-w-6xl mx-auto py-16 md:py-24 px-4 sm:px-6 lg:px-8">
@@ -58,9 +60,11 @@ export function Footer() {
             </a>
             . Todos los derechos reservados.
           </p>
-          <Link href="/politica-privacidad" className="text-dusty-rose hover:text-white transition-colors text-sm">
-            Política de privacidad
-          </Link>
+          {pageVisibility.politicaPrivacidad && (
+            <Link href="/politica-privacidad" className="text-dusty-rose hover:text-white transition-colors text-sm">
+              Política de privacidad
+            </Link>
+          )}
         </div>
       </div>
     </footer>

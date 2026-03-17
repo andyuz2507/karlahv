@@ -9,6 +9,7 @@ const {
   cursos,
   agenda,
   contacto,
+  pageVisibility,
 } = require('../src/lib/site-data')
 
 const prisma = new PrismaClient()
@@ -34,6 +35,7 @@ async function main() {
     { key: 'cursos', value: JSON.stringify(cursos) },
     { key: 'agenda', value: JSON.stringify(agenda) },
     { key: 'contacto', value: JSON.stringify(contacto) },
+    { key: 'pageVisibility', value: JSON.stringify(pageVisibility) },
   ]
 
   for (const c of contents) {

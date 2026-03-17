@@ -25,6 +25,21 @@ export default async function AdminPage() {
         Selecciona una sección para editar el contenido del sitio
       </p>
 
+      <div className="mb-8 p-6 rounded-2xl bg-white border border-berry/10">
+        <h3 className="font-serif text-lg font-bold text-charcoal mb-2">
+          Visibilidad de páginas
+        </h3>
+        <p className="text-charcoal-light text-sm mb-4">
+          Activa o desactiva cada página para que sea visible públicamente cuando esté lista.
+        </p>
+        <Link
+          href="/admin/pages"
+          className="text-berry font-medium hover:underline"
+        >
+          Gestionar visibilidad →
+        </Link>
+      </div>
+
       <div className="grid md:grid-cols-2 gap-4">
         {SECTIONS.map((s) => (
           <Link

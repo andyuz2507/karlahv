@@ -1,8 +1,10 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { getSiteData } from '@/lib/get-site-data'
+import { requirePageActive } from '@/lib/page-visibility'
 
 export default async function ServiciosPage() {
+  await requirePageActive('servicios')
   const { servicios } = await getSiteData()
   return (
     <>

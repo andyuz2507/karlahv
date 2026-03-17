@@ -7,9 +7,11 @@ import {
   cursos as cursosDefault,
   agenda as agendaDefault,
   contacto as contactoDefault,
+  pageVisibility as pageVisibilityDefault,
 } from './site-data'
 
 export type SiteData = typeof siteDefault
+export type PageVisibility = typeof pageVisibilityDefault
 export type AboutData = typeof aboutDefault
 export type ServiciosData = typeof serviciosDefault
 export type RecursosData = typeof recursosDefault
@@ -27,5 +29,6 @@ export async function getSiteData() {
     cursos: (content.cursos ?? cursosDefault) as CursosData,
     agenda: (content.agenda ?? agendaDefault) as AgendaData,
     contacto: (content.contacto ?? contactoDefault) as ContactoData,
+    pageVisibility: (content.pageVisibility ?? pageVisibilityDefault) as PageVisibility,
   }
 }

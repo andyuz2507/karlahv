@@ -3,8 +3,10 @@ import Image from 'next/image'
 import { getSiteData } from '@/lib/get-site-data'
 import { EnfoqueTimeline } from '@/components/EnfoqueTimeline'
 import { FormacionCarousel } from '@/components/FormacionCarousel'
+import { requirePageActive } from '@/lib/page-visibility'
 
 export default async function SobreMiPage() {
+  await requirePageActive('sobreMi')
   const { about, site } = await getSiteData()
   return (
     <>

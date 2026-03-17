@@ -1,7 +1,9 @@
 import Link from 'next/link'
 import { getSiteData } from '@/lib/get-site-data'
+import { requirePageActive } from '@/lib/page-visibility'
 
 export default async function PoliticaPrivacidadPage() {
+  await requirePageActive('politicaPrivacidad')
   const { site } = await getSiteData()
   return (
     <section className="section-padding bg-cream-light">

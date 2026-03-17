@@ -181,3 +181,17 @@ export const contacto = {
   mensaje: 'Si tienes dudas sobre los servicios, quieres más información o prefieres contactar antes de reservar, completa el formulario y te responderé pronto. Generalmente respondo en menos de 24 horas.',
   horarioAtencion: 'Lunes a Viernes, 9:00 - 18:00',
 }
+
+/** Páginas activas/inactivas. true = visible públicamente */
+export const pageVisibility = {
+  home: true,
+  sobreMi: true,
+  servicios: true,
+  recursosCursos: true,
+  comunidad: true,
+  contacto: true,
+  agenda: true,
+  politicaPrivacidad: true,
+  cursos: true,
+  recursos: true,
+}

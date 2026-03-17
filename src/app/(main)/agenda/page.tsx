@@ -1,6 +1,8 @@
 import { getSiteData } from '@/lib/get-site-data'
+import { requirePageActive } from '@/lib/page-visibility'
 
 export default async function AgendaPage() {
+  await requirePageActive('agenda')
   const { site, agenda } = await getSiteData()
   return (
     <>

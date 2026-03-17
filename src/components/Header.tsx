@@ -2,17 +2,19 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import type { PageVisibility } from '@/lib/get-site-data'
 
-const navLinks = [
-  { href: '/', label: 'Inicio' },
-  { href: '/sobre-mi', label: 'Sobre mí' },
-  { href: '/servicios', label: 'Servicios' },
-  { href: '/recursos-y-cursos', label: 'Recursos y cursos' },
-  { href: '/comunidad', label: 'Comunidad' },
-  { href: '/contacto', label: 'Contacto' },
+const navConfig = [
+  { href: '/', label: 'Inicio', key: 'home' as const },
+  { href: '/sobre-mi', label: 'Sobre mí', key: 'sobreMi' as const },
+  { href: '/servicios', label: 'Servicios', key: 'servicios' as const },
+  { href: '/recursos-y-cursos', label: 'Recursos y cursos', key: 'recursosCursos' as const },
+  { href: '/comunidad', label: 'Comunidad', key: 'comunidad' as const },
+  { href: '/contacto', label: 'Contacto', key: 'contacto' as const },
 ]
 
-export function Header() {
+export function Header({ pageVisibility }: { pageVisibility: PageVisibility }) {
+  const navLinks = navConfig.filter((l) => pageVisibility[l.key])
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -35,12 +37,14 @@ export function Header() {
               {link.label}
             </Link>
           ))}
-          <Link
-            href="/agenda"
-            className="px-6 py-3 rounded-full font-semibold bg-berry text-white hover:bg-berry-dark transition-all shadow-md hover:shadow-lg"
-          >
-            Reservar consulta
-          </Link>
+          {pageVisibility.agenda && (
+            <Link
+              href="/agenda"
+              className="px-6 py-3 rounded-full font-semibold bg-berry text-white hover:bg-berry-dark transition-all shadow-md hover:shadow-lg"
+            >
+              Reservar consulta
+            </Link>
+          )}
         </nav>
 
         <button
@@ -71,13 +75,15 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/agenda"
-              onClick={() => setIsOpen(false)}
-              className="btn-primary text-center mt-2"
-            >
-              Reservar consulta
-            </Link>
+            {pageVisibility.agenda && (
+              <Link
+                href="/agenda"
+                onClick={() => setIsOpen(false)}
+                className="btn-primary text-center mt-2"
+              >
+                Reservar consulta
+              </Link>
+            )}
           </nav>
         </div>
       )}

@@ -4,8 +4,10 @@ import { NewsletterForm } from '@/components/NewsletterForm'
 import { CurveDivider } from '@/components/CurveDivider'
 import { RecursosCarousel } from '@/components/RecursosCarousel'
 import { getSiteData } from '@/lib/get-site-data'
+import { requirePageActive } from '@/lib/page-visibility'
 
 export default async function HomePage() {
+  await requirePageActive('home')
   const { site, about, servicios, recursos, cursos } = await getSiteData()
   return (
     <>
