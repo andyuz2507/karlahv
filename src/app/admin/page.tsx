@@ -1,20 +1,14 @@
 import { redirect } from 'next/navigation'
 import { getAuthFromCookie } from '@/lib/auth'
 import Link from 'next/link'
-
-const SECTIONS = [
-  { key: 'site', label: 'Sitio general', desc: 'Nombre, email, teléfono, dominio' },
-  { key: 'about', label: 'Sobre mí', desc: 'Biografía, formación, enfoques' },
-  { key: 'servicios', label: 'Servicios', desc: 'Terapia niños, adolescentes, adultos' },
-  { key: 'recursos', label: 'Recursos', desc: 'Guías, lecturas, comunidad' },
-  { key: 'cursos', label: 'Cursos y talleres', desc: 'Enlaces Luma, cursos' },
-  { key: 'agenda', label: 'Agenda', desc: 'Calendly, tipos de cita' },
-  { key: 'contacto', label: 'Contacto', desc: 'Mensaje, horario' },
-]
+import { getSiteData } from '@/lib/get-site-data'
+import { AdminSectionsGrid } from '@/components/AdminSectionsGrid'
 
 export default async function AdminPage() {
   const auth = await getAuthFromCookie()
   if (!auth) redirect('/admin/login')
+
+  const { pageVisibility } = await getSiteData()
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -22,38 +16,16 @@ export default async function AdminPage() {
         Panel de administración
       </h1>
       <p className="text-charcoal-light mb-8">
-        Selecciona una sección para editar el contenido del sitio
+        Selecciona una sección para editar. El switch activa o oculta la página públicamente.
       </p>
 
-      <div className="mb-8 p-6 rounded-2xl bg-white border border-berry/10">
-        <h3 className="font-serif text-lg font-bold text-charcoal mb-2">
-          Visibilidad de páginas
-        </h3>
-        <p className="text-charcoal-light text-sm mb-4">
-          Activa o desactiva cada página para que sea visible públicamente cuando esté lista.
-        </p>
-        <Link
-          href="/admin/pages"
-          className="text-berry font-medium hover:underline"
-        >
-          Gestionar visibilidad →
-        </Link>
-      </div>
+      <AdminSectionsGrid initialVisibility={pageVisibility} />
 
-      <div className="grid md:grid-cols-2 gap-4">
-        {SECTIONS.map((s) => (
-          <Link
-            key={s.key}
-            href={`/admin/${s.key}`}
-            className="block p-6 rounded-2xl bg-white border border-berry/10 shadow-soft hover:shadow-soft-lg hover:border-dusty-rose/40 transition-all"
-          >
-            <h2 className="font-serif text-lg font-bold text-charcoal mb-1">
-              {s.label}
-            </h2>
-            <p className="text-charcoal-light text-sm">{s.desc}</p>
-          </Link>
-        ))}
-      </div>
+      <p className="mt-6 text-sm text-charcoal-light">
+        <Link href="/admin/pages" className="text-berry hover:underline">
+          Comunidad, Política de privacidad y más →
+        </Link>
+      </p>
 
       <div className="mt-12 p-6 rounded-2xl bg-white border border-berry/10">
         <h3 className="font-serif text-lg font-bold text-charcoal mb-2">
