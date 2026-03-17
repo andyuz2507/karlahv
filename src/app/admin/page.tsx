@@ -45,10 +45,10 @@ export default async function AdminPage() {
           className="block p-6 rounded-2xl bg-white border border-berry/10 shadow-soft hover:shadow-soft-lg hover:border-dusty-rose/40 transition-all"
         >
           <h3 className="font-serif text-lg font-bold text-charcoal mb-2">
-            Potenciales clientes
+            Potenciales pacientes
           </h3>
           <p className="text-charcoal-light text-sm mb-2">
-            Solicitudes de reserva y follow-up.
+            Solicitudes de reserva de pacientes potenciales.
           </p>
           <span className="text-berry font-medium text-sm">Ver solicitudes →</span>
         </Link>

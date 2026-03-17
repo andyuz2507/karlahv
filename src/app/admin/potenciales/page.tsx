@@ -10,7 +10,7 @@ export default async function AdminPotencialesPage() {
   return (
     <div className="max-w-5xl mx-auto">
       <h1 className="font-serif text-2xl font-bold text-berry mb-2">
-        Potenciales clientes
+        Potenciales pacientes
       </h1>
       <p className="text-charcoal-light mb-8">
         Solicitudes de reserva recibidas. Da follow-up desde aquí.

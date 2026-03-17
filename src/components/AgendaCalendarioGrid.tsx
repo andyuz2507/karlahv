@@ -189,6 +189,7 @@ function ReservaFormulario({
     descripcion: '',
     modalidad: 'fisico' as 'fisico' | 'remoto',
     temporalidad: 'semanal' as 'semanal' | 'quincenal',
+    referencia: '',
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -264,6 +265,10 @@ function ReservaFormulario({
               <option value="semanal">Semanal</option>
               <option value="quincenal">Quincenal</option>
             </select>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-charcoal mb-0.5">Compárteme a quién le agradezco la recomendación (opcional)</label>
+            <input type="text" placeholder="En caso de aplicar" value={form.referencia} onChange={(e) => setForm({ ...form, referencia: e.target.value })} className={inputClass} />
           </div>
           {error && <p className="text-red-600 text-sm">{error}</p>}
           <button type="submit" disabled={sending} className="w-full py-2 rounded-lg bg-berry text-white font-semibold hover:bg-berry-dark disabled:opacity-50 text-sm">

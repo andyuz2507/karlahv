@@ -13,7 +13,7 @@ export default async function AdminAgendaDisponibilidadPage() {
         Agenda y espacios disponibles
       </h1>
       <p className="text-charcoal-light mb-8">
-        Marca en verde los espacios que tienes disponibles. Los clientes podrán seleccionar y solicitar reserva.
+        Marca en verde los espacios que tienes disponibles. Los pacientes podrán seleccionar y solicitar reserva.
       </p>
 
       <AgendaDisponibilidadEditor />

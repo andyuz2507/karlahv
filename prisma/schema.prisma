@@ -49,7 +49,7 @@ model AvailabilitySlot {
   @@map("availability_slot")
 }
 
-// Solicitudes de reserva de clientes potenciales
+// Solicitudes de reserva de pacientes potenciales
 model BookingRequest {
   id          String   @id @default(cuid())
   nombre      String
@@ -61,6 +61,7 @@ model BookingRequest {
   temporalidad String
   slotDate    String   @map("slot_date")
   slotTime    String   @map("slot_time")
+  referencia  String?  // A quién le agradezco la recomendación (opcional)
   status      String   @default("pendiente")
   notas       String?
   createdAt   DateTime @default(now()) @map("created_at")

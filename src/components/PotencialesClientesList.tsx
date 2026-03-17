@@ -13,6 +13,7 @@ type BookingRequest = {
   temporalidad: string
   slotDate: string
   slotTime: string
+  referencia?: string | null
   status: string
   notas: string | null
   createdAt: string
@@ -103,6 +104,12 @@ export function PotencialesClientesList() {
             <span className="text-charcoal-light">Descripción:</span>{' '}
             {r.descripcion}
           </p>
+
+          {r.referencia ? (
+            <p className="mt-2 text-sm">
+              <span className="text-charcoal-light">Recomendación de:</span> {r.referencia}
+            </p>
+          ) : null}
 
           {editing === r.id ? (
             <div className="mt-4">

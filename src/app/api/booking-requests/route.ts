@@ -31,6 +31,7 @@ export async function GET() {
       temporalidad: r.temporalidad,
       slotDate: r.slot_date,
       slotTime: r.slot_time,
+      referencia: r.referencia,
       status: r.status,
       notas: r.notas,
       createdAt: r.created_at,
@@ -58,26 +59,32 @@ export async function POST(request: NextRequest) {
       temporalidad,
       slotDate,
       slotTime,
+      referencia,
     } = body
 
     if (!nombre || !celular || !email || !paraQuien || !descripcion || !modalidad || !temporalidad || !slotDate || !slotTime) {
       return NextResponse.json({ error: 'Todos los campos son requeridos' }, { status: 400 })
     }
 
+    const insertData: Record<string, unknown> = {
+      id: randomUUID(),
+      nombre: String(nombre).trim(),
+      celular: String(celular).trim(),
+      email: String(email).trim().toLowerCase(),
+      para_quien: String(paraQuien).trim(),
+      descripcion: String(descripcion).trim(),
+      modalidad: modalidad === 'remoto' ? 'remoto' : 'fisico',
+      temporalidad: temporalidad === 'quincenal' ? 'quincenal' : 'semanal',
+      slot_date: String(slotDate),
+      slot_time: String(slotTime),
+    }
+    if (referencia != null && String(referencia).trim()) {
+      insertData.referencia = String(referencia).trim()
+    }
+
     const { data, error } = await supabase
       .from('booking_request')
-      .insert({
-        id: randomUUID(),
-        nombre: String(nombre).trim(),
-        celular: String(celular).trim(),
-        email: String(email).trim().toLowerCase(),
-        para_quien: String(paraQuien).trim(),
-        descripcion: String(descripcion).trim(),
-        modalidad: modalidad === 'remoto' ? 'remoto' : 'fisico',
-        temporalidad: temporalidad === 'quincenal' ? 'quincenal' : 'semanal',
-        slot_date: String(slotDate),
-        slot_time: String(slotTime),
-      })
+      .insert(insertData)
       .select('id')
       .single()
 
