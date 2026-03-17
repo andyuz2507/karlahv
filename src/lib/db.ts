@@ -26,13 +26,17 @@ export async function getContent<T = unknown>(key: ContentKeys): Promise<T> {
 }
 
 export async function getAllContent(): Promise<Record<string, unknown>> {
-  const rows = await prisma.content.findMany()
-  const result: Record<string, unknown> = {}
-  for (const k of Object.keys(defaultContent) as ContentKeys[]) {
-    const row = rows.find((r) => r.key === k)
-    result[k] = row ? JSON.parse(row.value) : defaultContent[k]
+  try {
+    const rows = await prisma.content.findMany()
+    const result: Record<string, unknown> = {}
+    for (const k of Object.keys(defaultContent) as ContentKeys[]) {
+      const row = rows.find((r) => r.key === k)
+      result[k] = row ? JSON.parse(row.value) : defaultContent[k]
+    }
+    return result
+  } catch {
+    return { ...defaultContent }
   }
-  return result
 }
 
 export async function setContent(key: ContentKeys, value: unknown): Promise<void> {
