@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { NewsletterForm } from '@/components/NewsletterForm'
 import { CurveDivider } from '@/components/CurveDivider'
 import { RecursosCarousel } from '@/components/RecursosCarousel'
+import { AgendaCalendarioGrid } from '@/components/AgendaCalendarioGrid'
 import { getSiteData } from '@/lib/get-site-data'
 import { requirePageActive } from '@/lib/page-visibility'
 
@@ -113,29 +114,38 @@ export default async function HomePage() {
 
       <CurveDivider variant="cream-light" />
 
-      {/* 3. Da el primer paso */}
-      <section className="relative py-28 md:py-36 px-6 bg-berry text-white overflow-hidden">
+      {/* 3. Da el primer paso - texto izquierda, calendario derecha */}
+      <section className="relative py-20 md:py-28 px-6 bg-berry text-white overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute top-0 left-1/4 w-96 h-96 blob bg-white/5" />
           <div className="absolute bottom-0 right-1/4 w-80 h-80 blob-2 bg-dusty-rose/15" />
         </div>
-        <div className="max-w-3xl mx-auto relative z-10 text-center">
-          <p className="text-dusty-rose font-semibold mb-4 tracking-[0.2em] uppercase text-xs">
-            Consulta gratuita
-          </p>
-          <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
-            Da el primer paso
-          </h2>
-          <p className="text-cream-light/90 text-lg mb-12 max-w-2xl mx-auto leading-relaxed">
-            Ya seas nuevo en terapia o busques acompañamiento para esta etapa, 
-            una consulta de {site.consultaDuracion} nos permite conocernos y ver si encajamos.
-          </p>
-          <Link
-            href="/agenda"
-            className="inline-flex items-center justify-center px-14 py-5 rounded-full font-semibold bg-dusty-rose text-berry hover:bg-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1 text-lg"
-          >
-            Reservar mi consulta
-          </Link>
+        <div className="max-w-6xl mx-auto relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+            <div className="text-center lg:text-left">
+              <p className="text-dusty-rose font-semibold mb-4 tracking-[0.2em] uppercase text-xs">
+                Consulta gratuita
+              </p>
+              <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+                Da el primer paso
+              </h2>
+              <p className="text-cream-light/90 text-lg mb-8 leading-relaxed">
+                Ya seas nuevo en terapia o busques acompañamiento para esta etapa, 
+                una consulta de {site.consultaDuracion} nos permite conocernos y ver si encajamos.
+              </p>
+              <Link
+                href="/agenda"
+                className="inline-flex items-center justify-center px-14 py-5 rounded-full font-semibold bg-dusty-rose text-berry hover:bg-white transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1 text-lg"
+              >
+                Reservar mi consulta
+              </Link>
+            </div>
+            <div className="flex justify-center lg:justify-end">
+              <div className="w-full max-w-md">
+                <AgendaCalendarioGrid variant="dark" compact />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

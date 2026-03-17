@@ -1,0 +1,268 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+
+const TIME_SLOTS = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00']
+const DAY_LABELS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
+
+type AvailableSlot = { date: string; time: string; label: string }
+
+type Props = {
+  variant?: 'light' | 'dark'
+  compact?: boolean
+}
+
+export function AgendaCalendarioGrid({ variant = 'light', compact = false }: Props) {
+  const [available, setAvailable] = useState<AvailableSlot[]>([])
+  const [loading, setLoading] = useState(true)
+  const [weekStart, setWeekStart] = useState(() => getMonday(new Date()).toISOString().slice(0, 10))
+  const [selected, setSelected] = useState<AvailableSlot | null>(null)
+
+  useEffect(() => {
+    setLoading(true)
+    fetch(`/api/availability?week=${weekStart}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.error) setAvailable([])
+        else setAvailable(Array.isArray(data.available) ? data.available : [])
+      })
+      .catch(() => setAvailable([]))
+      .finally(() => setLoading(false))
+  }, [weekStart])
+
+  const availableSet = new Set(available.map((s) => `${s.date}-${s.time}`))
+
+  const weekDates: { date: string; day: number; label: string }[] = []
+  const start = new Date(weekStart)
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i)
+    weekDates.push({
+      date: d.toISOString().slice(0, 10),
+      day: d.getDate(),
+      label: DAY_LABELS[i],
+    })
+  }
+
+  const weekLabel = () => {
+    const end = new Date(start)
+    end.setDate(end.getDate() + 6)
+    const m = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+    return `${start.getDate()} - ${end.getDate()} ${m[end.getMonth()]} ${end.getFullYear()}`
+  }
+
+  const prevWeek = () => {
+    const d = new Date(weekStart)
+    d.setDate(d.getDate() - 7)
+    setWeekStart(d.toISOString().slice(0, 10))
+  }
+
+  const nextWeek = () => {
+    const d = new Date(weekStart)
+    d.setDate(d.getDate() + 7)
+    setWeekStart(d.toISOString().slice(0, 10))
+  }
+
+  const handleCellClick = (date: string, time: string) => {
+    const slot = available.find((s) => s.date === date && s.time === time)
+    if (slot) setSelected(slot)
+  }
+
+  const isLight = variant === 'light'
+
+  return (
+    <div className={isLight ? 'bg-white' : 'bg-berry/10 rounded-2xl p-4 md:p-6'}>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className={`font-serif text-lg md:text-xl font-semibold ${isLight ? 'text-charcoal' : 'text-white'}`}>
+          Selecciona un espacio disponible
+        </h2>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={prevWeek}
+            className={`p-2 rounded-lg ${isLight ? 'border border-berry/20 hover:bg-berry/10 text-charcoal' : 'bg-white/20 hover:bg-white/30 text-white'}`}
+          >
+            ←
+          </button>
+          <span className={`px-3 py-1.5 text-sm font-medium min-w-[160px] text-center ${isLight ? 'text-charcoal' : 'text-white'}`}>
+            {weekLabel()}
+          </span>
+          <button
+            onClick={nextWeek}
+            className={`p-2 rounded-lg ${isLight ? 'border border-berry/20 hover:bg-berry/10 text-charcoal' : 'bg-white/20 hover:bg-white/30 text-white'}`}
+          >
+            →
+          </button>
+        </div>
+      </div>
+
+      {loading ? (
+        <p className={isLight ? 'text-charcoal-light' : 'text-white/80'}>Cargando...</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <div className="min-w-[500px]">
+            {/* Header: days */}
+            <div className="grid grid-cols-8 gap-0.5 mb-1">
+              <div className={`text-xs font-medium p-1 ${isLight ? 'text-charcoal-light' : 'text-white/70'}`}>
+                Hora
+              </div>
+              {weekDates.map((wd) => (
+                <div key={wd.date} className={`text-center text-xs font-medium p-1 ${isLight ? 'text-charcoal' : 'text-white'}`}>
+                  <div>{wd.label}</div>
+                  <div className={isLight ? 'text-charcoal-light' : 'text-white/80'}>{wd.day}</div>
+                </div>
+              ))}
+            </div>
+            {/* Rows: time slots */}
+            {TIME_SLOTS.map((time) => (
+              <div key={time} className="grid grid-cols-8 gap-0.5 mb-0.5">
+                <div className={`text-xs p-1.5 flex items-center ${isLight ? 'text-charcoal-light' : 'text-white/80'}`}>
+                  {time}
+                </div>
+                {weekDates.map((wd) => {
+                  const isAvailable = availableSet.has(`${wd.date}-${time}`)
+                  const slot = available.find((s) => s.date === wd.date && s.time === time)
+                  return (
+                    <button
+                      key={`${wd.date}-${time}`}
+                      type="button"
+                      onClick={() => handleCellClick(wd.date, time)}
+                      disabled={!isAvailable}
+                      className={`
+                        aspect-square min-w-[36px] rounded text-xs font-medium transition-colors
+                        ${isAvailable
+                          ? 'bg-green-600 hover:bg-green-700 text-white cursor-pointer'
+                          : isLight
+                            ? 'bg-charcoal/10 text-charcoal/40 cursor-not-allowed'
+                            : 'bg-white/10 text-white/40 cursor-not-allowed'
+                        }
+                      `}
+                      title={isAvailable ? slot?.label : 'No disponible'}
+                    >
+                      {compact ? '' : isAvailable ? '✓' : '—'}
+                    </button>
+                  )
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <p className={`mt-4 text-xs ${isLight ? 'text-charcoal-light' : 'text-white/70'}`}>
+        Verde = disponible. Gris = no disponible. Haz clic en un espacio verde para reservar.
+      </p>
+
+      {selected && (
+        <ReservaFormulario
+          slot={selected}
+          onClose={() => setSelected(null)}
+          onSuccess={() => setSelected(null)}
+        />
+      )}
+    </div>
+  )
+}
+
+function getMonday(d: Date) {
+  const date = new Date(d)
+  const day = date.getDay()
+  const diff = date.getDate() - day + (day === 0 ? -6 : 1)
+  date.setDate(diff)
+  return date
+}
+
+function ReservaFormulario({
+  slot,
+  onClose,
+  onSuccess,
+}: {
+  slot: AvailableSlot
+  onClose: () => void
+  onSuccess: () => void
+}) {
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState('')
+  const [form, setForm] = useState({
+    nombre: '',
+    celular: '',
+    email: '',
+    paraQuien: '',
+    descripcion: '',
+    modalidad: 'fisico' as 'fisico' | 'remoto',
+    temporalidad: 'semanal' as 'semanal' | 'quincenal',
+  })
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    setSending(true)
+    try {
+      const res = await fetch('/api/booking-requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...form,
+          slotDate: slot.date,
+          slotTime: slot.time,
+        }),
+      })
+      const data = await res.json()
+      if (res.ok) onSuccess()
+      else setError(data.error || 'Error al enviar')
+    } catch {
+      setError('Error de conexión')
+    } finally {
+      setSending(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-charcoal/50">
+      <div className="bg-white rounded-2xl shadow-soft-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6 border-b border-berry/10 flex justify-between items-center">
+          <h3 className="font-serif text-xl font-bold text-charcoal">Solicitar reserva: {slot.label}</h3>
+          <button onClick={onClose} className="text-charcoal-light hover:text-charcoal text-2xl">×</button>
+        </div>
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-charcoal mb-1">Nombre *</label>
+            <input type="text" required value={form.nombre} onChange={(e) => setForm({ ...form, nombre: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-berry/20 focus:ring-2 focus:ring-berry/30" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-charcoal mb-1">Celular *</label>
+            <input type="tel" required value={form.celular} onChange={(e) => setForm({ ...form, celular: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-berry/20 focus:ring-2 focus:ring-berry/30" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-charcoal mb-1">Correo *</label>
+            <input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-berry/20 focus:ring-2 focus:ring-berry/30" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-charcoal mb-1">¿Para quién es la terapia? *</label>
+            <input type="text" required placeholder="Ej: mi hijo, yo mismo" value={form.paraQuien} onChange={(e) => setForm({ ...form, paraQuien: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-berry/20 focus:ring-2 focus:ring-berry/30" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-charcoal mb-1">Breve descripción *</label>
+            <textarea required rows={3} placeholder="Cuéntanos brevemente qué te motiva" value={form.descripcion} onChange={(e) => setForm({ ...form, descripcion: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-berry/20 focus:ring-2 focus:ring-berry/30" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-charcoal mb-1">Modalidad *</label>
+            <select value={form.modalidad} onChange={(e) => setForm({ ...form, modalidad: e.target.value as 'fisico' | 'remoto' })} className="w-full px-4 py-3 rounded-xl border border-berry/20">
+              <option value="fisico">Presencial</option>
+              <option value="remoto">Remoto</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-charcoal mb-1">Temporalidad *</label>
+            <select value={form.temporalidad} onChange={(e) => setForm({ ...form, temporalidad: e.target.value as 'semanal' | 'quincenal' })} className="w-full px-4 py-3 rounded-xl border border-berry/20">
+              <option value="semanal">Semanal</option>
+              <option value="quincenal">Quincenal</option>
+            </select>
+          </div>
+          {error && <p className="text-red-600 text-sm">{error}</p>}
+          <button type="submit" disabled={sending} className="w-full py-3 rounded-xl bg-berry text-white font-semibold hover:bg-berry-dark disabled:opacity-50">
+            {sending ? 'Enviando...' : 'Enviar solicitud'}
+          </button>
+        </form>
+      </div>
+    </div>
+  )
+}

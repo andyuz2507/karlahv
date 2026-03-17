@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { getSiteData } from '@/lib/get-site-data'
 import { requirePageActive } from '@/lib/page-visibility'
-import { AgendaCalendario } from '@/components/AgendaCalendario'
+import { AgendaCalendarioGrid } from '@/components/AgendaCalendarioGrid'
 
 export default async function AgendaPage() {
   await requirePageActive('agenda')
@@ -28,10 +28,10 @@ export default async function AgendaPage() {
         </div>
       </section>
 
-      {/* Contenido */}
+      {/* Contenido: texto izquierda, calendario derecha */}
       <section className="relative py-16 md:py-24 px-6 bg-cream-light">
         <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-start">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
             <div>
               <h2 className="font-serif text-2xl font-bold text-charcoal mb-6">
                 {site.name}
@@ -57,13 +57,8 @@ export default async function AgendaPage() {
               </p>
             </div>
 
-            <div className="bg-white rounded-[2rem] border border-berry/10 shadow-soft-lg overflow-hidden">
-              <AgendaCalendario />
-              <div className="p-4 border-t border-berry/10 bg-cream-light/50">
-                <p className="text-sm text-charcoal-light">
-                  Selecciona un espacio verde y completa el formulario para enviar tu solicitud. Te contactaremos pronto.
-                </p>
-              </div>
+            <div className="bg-white rounded-[2rem] border border-berry/10 shadow-soft-lg overflow-hidden p-6">
+              <AgendaCalendarioGrid variant="light" />
             </div>
           </div>
         </div>
