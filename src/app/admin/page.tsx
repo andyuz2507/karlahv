@@ -27,6 +27,33 @@ export default async function AdminPage() {
         </Link>
       </p>
 
+      <div className="mt-12 grid md:grid-cols-2 gap-4">
+        <Link
+          href="/admin/agenda-disponibilidad"
+          className="block p-6 rounded-2xl bg-white border border-berry/10 shadow-soft hover:shadow-soft-lg hover:border-dusty-rose/40 transition-all"
+        >
+          <h3 className="font-serif text-lg font-bold text-charcoal mb-2">
+            Agenda y espacios
+          </h3>
+          <p className="text-charcoal-light text-sm mb-2">
+            Marca los espacios disponibles (semanal o quincenal).
+          </p>
+          <span className="text-berry font-medium text-sm">Gestionar agenda →</span>
+        </Link>
+        <Link
+          href="/admin/potenciales"
+          className="block p-6 rounded-2xl bg-white border border-berry/10 shadow-soft hover:shadow-soft-lg hover:border-dusty-rose/40 transition-all"
+        >
+          <h3 className="font-serif text-lg font-bold text-charcoal mb-2">
+            Potenciales clientes
+          </h3>
+          <p className="text-charcoal-light text-sm mb-2">
+            Solicitudes de reserva y follow-up.
+          </p>
+          <span className="text-berry font-medium text-sm">Ver solicitudes →</span>
+        </Link>
+      </div>
+
       <div className="mt-12 p-6 rounded-2xl bg-white border border-berry/10">
         <h3 className="font-serif text-lg font-bold text-charcoal mb-2">
           Subir archivos

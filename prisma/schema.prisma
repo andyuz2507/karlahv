@@ -35,3 +35,31 @@ model File {
   size      Int?
   createdAt DateTime @default(now())
 }
+
+// Espacios disponibles recurrentes (semanal o quincenal)
+model AvailabilitySlot {
+  id         String   @id @default(cuid())
+  dayOfWeek  Int      // 0=domingo, 1=lunes, ..., 6=sábado
+  startTime  String   // "09:00"
+  endTime    String   // "10:00"
+  frequency  String   // "weekly" | "biweekly"
+  biweekGroup Int?    // 0 o 1 para quincenal (semana par/impar del año)
+  createdAt  DateTime @default(now())
+}
+
+// Solicitudes de reserva de clientes potenciales
+model BookingRequest {
+  id          String   @id @default(cuid())
+  nombre      String
+  celular     String
+  email       String
+  paraQuien   String   // para quién es la terapia
+  descripcion String
+  modalidad   String   // "fisico" | "remoto"
+  temporalidad String  // "semanal" | "quincenal"
+  slotDate    String   // "2025-03-17"
+  slotTime    String   // "09:00"
+  status      String   @default("pendiente") // pendiente, contactado, agendada, cancelada
+  notas       String?  // notas internas para follow-up
+  createdAt   DateTime @default(now())
+}

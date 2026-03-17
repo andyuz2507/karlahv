@@ -1,5 +1,7 @@
+import Link from 'next/link'
 import { getSiteData } from '@/lib/get-site-data'
 import { requirePageActive } from '@/lib/page-visibility'
+import { AgendaCalendario } from '@/components/AgendaCalendario'
 
 export default async function AgendaPage() {
   await requirePageActive('agenda')
@@ -50,38 +52,16 @@ export default async function AgendaPage() {
               <p className="text-charcoal-light leading-relaxed mb-10">
                 {agenda.descripcion}
               </p>
-              <a
-                href={agenda.linkCalendly}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-primary inline-block mb-8"
-              >
-                Abrir calendario en Calendly
-              </a>
               <p className="text-sm text-charcoal-light">
-                <a href="/politica-privacidad" className="text-berry hover:underline">Política de privacidad</a>
+                <Link href="/politica-privacidad" className="text-berry hover:underline">Política de privacidad</Link>
               </p>
             </div>
 
             <div className="bg-white rounded-[2rem] border border-berry/10 shadow-soft-lg overflow-hidden">
-              <div className="p-6 border-b border-berry/10 bg-cream/30">
-                <h2 className="font-serif text-xl font-semibold text-charcoal">
-                  Selecciona fecha y hora
-                </h2>
-              </div>
-              <div className="min-h-[500px]">
-                <iframe
-                  src={`${agenda.linkCalendly}${agenda.linkCalendly.includes('?') ? '&' : '?'}embed_domain=karlahv.mx`}
-                  width="100%"
-                  height="600"
-                  frameBorder="0"
-                  title="Reservar consulta con Karla"
-                  className="min-h-[500px]"
-                />
-              </div>
+              <AgendaCalendario />
               <div className="p-4 border-t border-berry/10 bg-cream-light/50">
                 <p className="text-sm text-charcoal-light">
-                  La zona horaria se ajusta automáticamente según tu ubicación.
+                  Selecciona un espacio verde y completa el formulario para enviar tu solicitud. Te contactaremos pronto.
                 </p>
               </div>
             </div>
