@@ -37,16 +37,29 @@ export function AgendaDisponibilidadEditor() {
   const [slots, setSlots] = useState<Slot[]>([])
   const [loading, setLoading] = useState(true)
   const [adding, setAdding] = useState(false)
+  const [configError, setConfigError] = useState<string | null>(null)
+  const [successMsg, setSuccessMsg] = useState<string | null>(null)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editSlot, setEditSlot] = useState(emptySlot())
   const [newSlot, setNewSlot] = useState(emptySlot())
 
   const loadSlots = useCallback(() => {
+    setLoading(true)
+    setConfigError(null)
     return fetch('/api/availability', { credentials: 'include' })
       .then((r) => r.json())
       .then((data) => {
+        if (data?.error) {
+          setConfigError(data.error)
+          setSlots([])
+          return
+        }
         const list = Array.isArray(data) ? data : data.slots || []
         setSlots(list.map((s: Slot) => ({ ...s, biweekGroup: s.biweekGroup ?? 0 })))
+      })
+      .catch(() => {
+        setConfigError('Error de conexión. Revisa que las variables de entorno estén configuradas en Vercel.')
+        setSlots([])
       })
       .finally(() => setLoading(false))
   }, [])
@@ -57,6 +70,8 @@ export function AgendaDisponibilidadEditor() {
 
   const addSlot = async () => {
     setAdding(true)
+    setSuccessMsg(null)
+    setConfigError(null)
     try {
       const res = await fetch('/api/availability', {
         method: 'POST',
@@ -67,14 +82,26 @@ export function AgendaDisponibilidadEditor() {
           biweekGroup: newSlot.frequency === 'biweekly' ? newSlot.biweekGroup : undefined,
         }),
       })
+      const data = await res.json().catch(() => ({}))
       if (res.ok) {
-        const created = await res.json()
-        setSlots((s) => [...s, { ...created, biweekGroup: created.biweekGroup ?? 0 }])
-        setNewSlot(emptySlot())
+        const created = data
+        if (created?.id) {
+          setSlots((s) => [...s, { ...created, biweekGroup: created.biweekGroup ?? 0 }])
+          setNewSlot(emptySlot())
+          setSuccessMsg('Espacio añadido correctamente. Se verá en verde en el calendario público.')
+          setTimeout(() => setSuccessMsg(null), 4000)
+        } else {
+          setConfigError('Respuesta inesperada del servidor.')
+        }
       } else {
-        const err = await res.json()
-        alert(err.error || 'Error al guardar')
+        const msg = res.status === 401
+          ? 'Sesión expirada. Cierra sesión y vuelve a iniciar sesión.'
+          : (data?.error || 'Error al guardar')
+        setConfigError(msg)
+        setTimeout(() => setConfigError(null), 15000)
       }
+    } catch {
+      setConfigError('Error de conexión al guardar.')
     } finally {
       setAdding(false)
     }
@@ -135,14 +162,29 @@ export function AgendaDisponibilidadEditor() {
     })
   }
 
-  if (loading) return <p className="text-charcoal-light">Cargando...</p>
+  if (loading && slots.length === 0) return <p className="text-charcoal-light">Cargando...</p>
 
   return (
     <div className="space-y-8">
+      {configError && (
+        <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-sm">
+          {configError}
+          {configError.includes('Sesión') && (
+            <span className="block mt-2">
+              <a href="/admin/login" className="text-berry font-medium underline">Ir a iniciar sesión</a>
+            </span>
+          )}
+        </div>
+      )}
+      {successMsg && (
+        <div className="p-4 rounded-xl bg-green-50 border border-green-200 text-green-800 text-sm">
+          {successMsg}
+        </div>
+      )}
       <div className="p-6 rounded-2xl bg-white border border-berry/10">
         <h3 className="font-serif text-lg font-bold text-charcoal mb-4">Añadir espacio disponible</h3>
         <p className="text-sm text-charcoal-light mb-4">
-          Los espacios que añadas aquí se guardan y aparecen en verde en el calendario público.
+          Los espacios que añadas aquí se guardan y aparecen en verde en el calendario público (horario 9:00–18:00).
         </p>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
@@ -216,7 +258,16 @@ export function AgendaDisponibilidadEditor() {
       </div>
 
       <div className="p-6 rounded-2xl bg-white border border-berry/10">
-        <h3 className="font-serif text-lg font-bold text-charcoal mb-4">Espacios configurados</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-serif text-lg font-bold text-charcoal">Espacios configurados</h3>
+          <button
+            type="button"
+            onClick={() => loadSlots()}
+            className="text-sm text-berry font-medium hover:underline"
+          >
+            Refrescar
+          </button>
+        </div>
         <p className="text-sm text-charcoal-light mb-4">
           Estos espacios aparecen en verde en el calendario de la página de agenda y en la home.
         </p>

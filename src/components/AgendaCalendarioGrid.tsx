@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 
-const TIME_SLOTS = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00']
+const TIME_SLOTS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00']
 const DAY_LABELS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
 
 type AvailableSlot = { date: string; time: string; label: string }
@@ -70,9 +70,9 @@ export function AgendaCalendarioGrid({ variant = 'light', compact = false }: Pro
   const isLight = variant === 'light'
 
   return (
-    <div className={isLight ? 'bg-white' : 'bg-berry/10 rounded-2xl p-4 md:p-6'}>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className={`font-serif text-lg md:text-xl font-semibold ${isLight ? 'text-charcoal' : 'text-white'}`}>
+    <div className={isLight ? 'bg-white' : 'bg-berry/10 rounded-2xl p-3 md:p-4'}>
+      <div className="flex items-center justify-between mb-2">
+        <h2 className={`font-serif text-base font-semibold ${isLight ? 'text-charcoal' : 'text-white'}`}>
           Selecciona un espacio disponible
         </h2>
         <div className="flex items-center gap-2">
@@ -95,26 +95,26 @@ export function AgendaCalendarioGrid({ variant = 'light', compact = false }: Pro
       </div>
 
       {loading ? (
-        <p className={isLight ? 'text-charcoal-light' : 'text-white/80'}>Cargando...</p>
+        <p className={`text-sm ${isLight ? 'text-charcoal-light' : 'text-white/80'}`}>Cargando...</p>
       ) : (
-        <div className="overflow-x-auto">
-          <div className="min-w-[500px]">
-            {/* Header: days */}
-            <div className="grid grid-cols-8 gap-0.5 mb-1">
-              <div className={`text-xs font-medium p-1 ${isLight ? 'text-charcoal-light' : 'text-white/70'}`}>
+        <div className="overflow-x-auto -mx-1">
+          <div className="min-w-[320px]">
+            {/* Header: days - compacto */}
+            <div className="grid grid-cols-8 gap-0.5 mb-0.5">
+              <div className={`text-[10px] font-medium px-0.5 py-0.5 ${isLight ? 'text-charcoal-light' : 'text-white/70'}`}>
                 Hora
               </div>
               {weekDates.map((wd) => (
-                <div key={wd.date} className={`text-center text-xs font-medium p-1 ${isLight ? 'text-charcoal' : 'text-white'}`}>
+                <div key={wd.date} className={`text-center text-[10px] font-medium px-0.5 py-0.5 ${isLight ? 'text-charcoal' : 'text-white'}`}>
                   <div>{wd.label}</div>
                   <div className={isLight ? 'text-charcoal-light' : 'text-white/80'}>{wd.day}</div>
                 </div>
               ))}
             </div>
-            {/* Rows: time slots */}
+            {/* Rows: time slots - celdas pequeñas sin scroll */}
             {TIME_SLOTS.map((time) => (
               <div key={time} className="grid grid-cols-8 gap-0.5 mb-0.5">
-                <div className={`text-xs p-1.5 flex items-center ${isLight ? 'text-charcoal-light' : 'text-white/80'}`}>
+                <div className={`text-[10px] px-0.5 py-0.5 flex items-center h-5 ${isLight ? 'text-charcoal-light' : 'text-white/80'}`}>
                   {time}
                 </div>
                 {weekDates.map((wd) => {
@@ -127,7 +127,7 @@ export function AgendaCalendarioGrid({ variant = 'light', compact = false }: Pro
                       onClick={() => handleCellClick(wd.date, time)}
                       disabled={!isAvailable}
                       className={`
-                        aspect-square min-w-[36px] rounded text-xs font-medium transition-colors
+                        w-5 h-5 min-w-[20px] min-h-[20px] rounded-sm text-[10px] font-medium transition-colors flex items-center justify-center
                         ${isAvailable
                           ? 'bg-green-600 hover:bg-green-700 text-white cursor-pointer'
                           : isLight
@@ -147,7 +147,7 @@ export function AgendaCalendarioGrid({ variant = 'light', compact = false }: Pro
         </div>
       )}
 
-      <p className={`mt-4 text-xs ${isLight ? 'text-charcoal-light' : 'text-white/70'}`}>
+      <p className={`mt-2 text-[10px] ${isLight ? 'text-charcoal-light' : 'text-white/70'}`}>
         Verde = disponible. Gris = no disponible. Haz clic en un espacio verde para reservar.
       </p>
 

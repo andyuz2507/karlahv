@@ -29,7 +29,11 @@ export async function GET(request: NextRequest) {
     const weekParam = searchParams.get('week')
 
     if (!supabase) {
-      return NextResponse.json({ slots: [], available: [], error: 'Configuración incompleta' })
+      return NextResponse.json({
+        slots: [],
+        available: [],
+        error: 'Configuración incompleta. Añade NEXT_PUBLIC_SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY en Vercel.',
+      })
     }
 
     const { data: rows, error } = await supabase
@@ -101,13 +105,15 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('Availability POST error:', error)
-      return NextResponse.json({ error: 'Error al crear espacio' }, { status: 500 })
+      const msg = error?.message || error?.code || 'Error desconocido'
+      return NextResponse.json({ error: `Error al crear espacio: ${msg}` }, { status: 500 })
     }
 
     return NextResponse.json(toSlot(data as SlotRow))
   } catch (e) {
     console.error('Availability POST error:', e)
-    return NextResponse.json({ error: 'Error al crear espacio' }, { status: 500 })
+    const msg = e instanceof Error ? e.message : 'Error desconocido'
+    return NextResponse.json({ error: `Error al crear espacio: ${msg}` }, { status: 500 })
   }
 }
 
