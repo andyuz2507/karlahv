@@ -3,7 +3,7 @@
 import { useState, useEffect, useLayoutEffect } from 'react'
 
 const TIME_SLOTS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00']
-const DAY_LABELS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
+const DAY_LABELS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie']
 
 type AvailableSlot = { date: string; time: string; label: string }
 
@@ -15,7 +15,7 @@ type Props = {
 export function AgendaCalendarioGrid({ variant = 'light', compact = false }: Props) {
   const [available, setAvailable] = useState<AvailableSlot[]>([])
   const [loading, setLoading] = useState(true)
-  const [weekStart, setWeekStart] = useState(() => getMonday(new Date()).toISOString().slice(0, 10))
+  const [weekStart, setWeekStart] = useState(() => toLocalDateString(getMonday(new Date())))
   const [selected, setSelected] = useState<AvailableSlot | null>(null)
 
   useEffect(() => {
@@ -32,10 +32,13 @@ export function AgendaCalendarioGrid({ variant = 'light', compact = false }: Pro
 
   const availableSet = new Set(available.map((s) => `${s.date}-${s.time}`))
 
+  // Parse weekStart como fecha local (evita desfase por timezone)
+  const [y, m, day] = weekStart.split('-').map(Number)
+  const start = new Date(y, m - 1, day)
+
   const weekDates: { date: string; day: number; label: string }[] = []
-  const start = new Date(weekStart)
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i)
+  for (let i = 0; i < 5; i++) {
+    const d = new Date(y, m - 1, day + i)
     weekDates.push({
       date: d.toISOString().slice(0, 10),
       day: d.getDate(),
@@ -44,22 +47,19 @@ export function AgendaCalendarioGrid({ variant = 'light', compact = false }: Pro
   }
 
   const weekLabel = () => {
-    const end = new Date(start)
-    end.setDate(end.getDate() + 6)
-    const m = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
-    return `${start.getDate()} - ${end.getDate()} ${m[end.getMonth()]} ${end.getFullYear()}`
+    const end = new Date(y, m - 1, day + 4)
+    const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+    return `${start.getDate()} - ${end.getDate()} ${months[end.getMonth()]} ${end.getFullYear()}`
   }
 
   const prevWeek = () => {
-    const d = new Date(weekStart)
-    d.setDate(d.getDate() - 7)
-    setWeekStart(d.toISOString().slice(0, 10))
+    const d = new Date(y, m - 1, day - 7)
+    setWeekStart(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`)
   }
 
   const nextWeek = () => {
-    const d = new Date(weekStart)
-    d.setDate(d.getDate() + 7)
-    setWeekStart(d.toISOString().slice(0, 10))
+    const d = new Date(y, m - 1, day + 7)
+    setWeekStart(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`)
   }
 
   const handleCellClick = (date: string, time: string) => {
@@ -98,9 +98,9 @@ export function AgendaCalendarioGrid({ variant = 'light', compact = false }: Pro
         <p className={`text-sm ${isLight ? 'text-charcoal-light' : 'text-white/80'}`}>Cargando...</p>
       ) : (
         <div className="overflow-x-auto -mx-1 touch-pan-x">
-          <div className="min-w-[280px] sm:min-w-[320px]">
+          <div className="min-w-[240px] sm:min-w-[280px]">
             {/* Header: days - compacto */}
-            <div className="grid grid-cols-8 gap-0.5 mb-0.5">
+            <div className="grid grid-cols-6 gap-0.5 mb-0.5">
               <div className={`text-[10px] sm:text-[10px] font-medium px-0.5 py-0.5 ${isLight ? 'text-charcoal-light' : 'text-white/70'}`}>
                 Hora
               </div>
@@ -113,7 +113,7 @@ export function AgendaCalendarioGrid({ variant = 'light', compact = false }: Pro
             </div>
             {/* Rows: time slots - celdas más grandes en móvil */}
             {TIME_SLOTS.map((time) => (
-              <div key={time} className="grid grid-cols-8 gap-0.5 mb-0.5">
+              <div key={time} className="grid grid-cols-6 gap-0.5 mb-0.5">
                 <div className={`text-[10px] px-0.5 py-0.5 flex items-center h-6 sm:h-5 ${isLight ? 'text-charcoal-light' : 'text-white/80'}`}>
                   {time}
                 </div>
@@ -160,6 +160,13 @@ export function AgendaCalendarioGrid({ variant = 'light', compact = false }: Pro
       )}
     </div>
   )
+}
+
+function toLocalDateString(d: Date) {
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
 }
 
 function getMonday(d: Date) {

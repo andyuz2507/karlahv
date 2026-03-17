@@ -29,7 +29,7 @@ export function getAvailableSlotsForWeek(
         if (slotGroup !== biweekGroup) continue
       }
 
-      const dateStr = date.toISOString().slice(0, 10)
+      const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
       const dayLabel = DAYS[dayOfWeek]
       const monthDay = date.getDate()
       const month = MONTHS[date.getMonth()]
