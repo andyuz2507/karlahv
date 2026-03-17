@@ -71,23 +71,23 @@ export function AgendaCalendarioGrid({ variant = 'light', compact = false }: Pro
 
   return (
     <div className={isLight ? 'bg-white' : 'bg-berry/10 rounded-2xl p-3 md:p-4'}>
-      <div className="flex items-center justify-between mb-2">
-        <h2 className={`font-serif text-base font-semibold ${isLight ? 'text-charcoal' : 'text-white'}`}>
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+        <h2 className={`font-serif text-sm sm:text-base font-semibold ${isLight ? 'text-charcoal' : 'text-white'}`}>
           Selecciona un espacio disponible
         </h2>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           <button
             onClick={prevWeek}
-            className={`p-2 rounded-lg ${isLight ? 'border border-berry/20 hover:bg-berry/10 text-charcoal' : 'bg-white/20 hover:bg-white/30 text-white'}`}
+            className={`p-1.5 sm:p-2 rounded-lg ${isLight ? 'border border-berry/20 hover:bg-berry/10 text-charcoal' : 'bg-white/20 hover:bg-white/30 text-white'}`}
           >
             ←
           </button>
-          <span className={`px-3 py-1.5 text-sm font-medium min-w-[160px] text-center ${isLight ? 'text-charcoal' : 'text-white'}`}>
+          <span className={`px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-medium min-w-[100px] sm:min-w-[140px] text-center ${isLight ? 'text-charcoal' : 'text-white'}`}>
             {weekLabel()}
           </span>
           <button
             onClick={nextWeek}
-            className={`p-2 rounded-lg ${isLight ? 'border border-berry/20 hover:bg-berry/10 text-charcoal' : 'bg-white/20 hover:bg-white/30 text-white'}`}
+            className={`p-1.5 sm:p-2 rounded-lg ${isLight ? 'border border-berry/20 hover:bg-berry/10 text-charcoal' : 'bg-white/20 hover:bg-white/30 text-white'}`}
           >
             →
           </button>
@@ -97,11 +97,11 @@ export function AgendaCalendarioGrid({ variant = 'light', compact = false }: Pro
       {loading ? (
         <p className={`text-sm ${isLight ? 'text-charcoal-light' : 'text-white/80'}`}>Cargando...</p>
       ) : (
-        <div className="overflow-x-auto -mx-1">
-          <div className="min-w-[320px]">
+        <div className="overflow-x-auto -mx-1 touch-pan-x">
+          <div className="min-w-[280px] sm:min-w-[320px]">
             {/* Header: days - compacto */}
             <div className="grid grid-cols-8 gap-0.5 mb-0.5">
-              <div className={`text-[10px] font-medium px-0.5 py-0.5 ${isLight ? 'text-charcoal-light' : 'text-white/70'}`}>
+              <div className={`text-[10px] sm:text-[10px] font-medium px-0.5 py-0.5 ${isLight ? 'text-charcoal-light' : 'text-white/70'}`}>
                 Hora
               </div>
               {weekDates.map((wd) => (
@@ -111,10 +111,10 @@ export function AgendaCalendarioGrid({ variant = 'light', compact = false }: Pro
                 </div>
               ))}
             </div>
-            {/* Rows: time slots - celdas pequeñas sin scroll */}
+            {/* Rows: time slots - celdas más grandes en móvil */}
             {TIME_SLOTS.map((time) => (
               <div key={time} className="grid grid-cols-8 gap-0.5 mb-0.5">
-                <div className={`text-[10px] px-0.5 py-0.5 flex items-center h-5 ${isLight ? 'text-charcoal-light' : 'text-white/80'}`}>
+                <div className={`text-[10px] px-0.5 py-0.5 flex items-center h-6 sm:h-5 ${isLight ? 'text-charcoal-light' : 'text-white/80'}`}>
                   {time}
                 </div>
                 {weekDates.map((wd) => {
@@ -127,9 +127,9 @@ export function AgendaCalendarioGrid({ variant = 'light', compact = false }: Pro
                       onClick={() => handleCellClick(wd.date, time)}
                       disabled={!isAvailable}
                       className={`
-                        w-5 h-5 min-w-[20px] min-h-[20px] rounded-sm text-[10px] font-medium transition-colors flex items-center justify-center
+                        w-6 h-6 min-w-[24px] min-h-[24px] sm:w-5 sm:h-5 sm:min-w-[20px] sm:min-h-[20px] rounded-sm text-[10px] font-medium transition-colors flex items-center justify-center
                         ${isAvailable
-                          ? 'bg-green-600 hover:bg-green-700 text-white cursor-pointer'
+                          ? 'bg-green-600 hover:bg-green-700 text-white cursor-pointer active:scale-95'
                           : isLight
                             ? 'bg-charcoal/10 text-charcoal/40 cursor-not-allowed'
                             : 'bg-white/10 text-white/40 cursor-not-allowed'
@@ -147,7 +147,7 @@ export function AgendaCalendarioGrid({ variant = 'light', compact = false }: Pro
         </div>
       )}
 
-      <p className={`mt-2 text-[10px] ${isLight ? 'text-charcoal-light' : 'text-white/70'}`}>
+      <p className={`mt-2 text-[10px] sm:text-[10px] ${isLight ? 'text-charcoal-light' : 'text-white/70'}`}>
         Verde = disponible. Gris = no disponible. Haz clic en un espacio verde para reservar.
       </p>
 

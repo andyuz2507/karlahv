@@ -25,7 +25,7 @@ export function NewsletterForm({ variant = 'dark' }: { variant?: 'dark' | 'light
         placeholder="tu@email.com"
         required
         disabled={status === 'loading'}
-        className={`flex-1 px-5 py-3.5 rounded-2xl border-2 focus:outline-none focus:ring-2 focus:ring-berry/30 transition-all ${
+        className={`flex-1 px-4 py-3 sm:px-5 sm:py-3.5 rounded-2xl border-2 focus:outline-none focus:ring-2 focus:ring-berry/30 transition-all ${
           isLight
             ? 'bg-cream/50 border-berry/15 text-charcoal placeholder-charcoal-light/50 focus:border-berry/40'
             : 'bg-cream/10 border-cream-light/30 text-white placeholder-cream-light/60 focus:border-dusty-rose'

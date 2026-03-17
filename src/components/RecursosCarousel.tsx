@@ -76,7 +76,7 @@ export function RecursosCarousel({ recursos, cursos }: { recursos: Recursos; cur
     <>
       {/* Collage clickable - abre modal */}
       <section 
-        className="relative min-h-[70vh] py-24 px-6 cursor-pointer overflow-hidden"
+        className="relative min-h-[60vh] sm:min-h-[70vh] py-16 sm:py-20 md:py-24 px-4 sm:px-6 cursor-pointer overflow-hidden"
         onClick={() => openCarousel('guias')}
       >
         {/* Collage background - grid de imágenes/eventos */}
@@ -93,7 +93,7 @@ export function RecursosCarousel({ recursos, cursos }: { recursos: Recursos; cur
           <p className="text-dusty-rose font-medium mb-4 tracking-[0.2em] uppercase text-xs">
             Para llevar a casa
           </p>
-          <h2 className="font-serif text-3xl md:text-5xl font-bold mb-4">
+          <h2 className="font-serif text-2xl sm:text-3xl md:text-5xl font-bold mb-4">
             Recursos y cursos
           </h2>
           <p className="text-cream-light/90 max-w-xl mb-8">
@@ -136,7 +136,7 @@ export function RecursosCarousel({ recursos, cursos }: { recursos: Recursos; cur
           onClick={closeModal}
         >
           <div
-            className="relative w-full max-w-5xl max-h-[90vh] mx-4 bg-cream rounded-2xl overflow-hidden shadow-2xl"
+            className="relative w-full max-w-5xl max-h-[90vh] mx-2 sm:mx-4 bg-cream rounded-2xl overflow-hidden shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -145,12 +145,12 @@ export function RecursosCarousel({ recursos, cursos }: { recursos: Recursos; cur
             >
               ×
             </button>
-            <div className="p-8 pb-4">
-              <h3 className="font-serif text-2xl font-bold text-charcoal">
+            <div className="p-4 sm:p-6 md:p-8 pb-4">
+              <h3 className="font-serif text-xl sm:text-2xl font-bold text-charcoal">
                 {getCarouselTitle()}
               </h3>
             </div>
-            <div className="flex gap-4 overflow-x-auto pb-8 px-8 scroll-smooth [&::-webkit-scrollbar]:hidden">
+            <div className="flex gap-4 overflow-x-auto pb-8 px-4 sm:px-6 md:px-8 scroll-smooth [&::-webkit-scrollbar]:hidden">
               {getCarouselItems().map((item, i) => (
                 <div
                   key={i}
@@ -170,7 +170,7 @@ export function RecursosCarousel({ recursos, cursos }: { recursos: Recursos; cur
                 </div>
               ))}
             </div>
-            <div className="px-8 pb-8">
+            <div className="px-4 sm:px-6 md:px-8 pb-8">
               <Link
                 href="/recursos-y-cursos"
                 onClick={closeModal}

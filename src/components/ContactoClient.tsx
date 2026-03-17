@@ -18,13 +18,13 @@ export function ContactoClient({ site, contacto }: { site: Site; contacto: Conta
   return (
     <>
       <section className="section-padding bg-cream-light">
-        <div className="max-w-6xl mx-auto py-16 md:py-24 px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12">
+        <div className="max-w-6xl mx-auto py-12 sm:py-16 md:py-24 px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-12">
             <div>
               <p className="text-berry font-medium mb-4 uppercase tracking-wider text-sm">
                 Contacto
               </p>
-              <h1 className="font-serif text-4xl md:text-5xl font-semibold text-charcoal mb-6">
+              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-semibold text-charcoal mb-6">
                 Escríbenos
               </h1>
               <p className="text-charcoal-light mb-8">
@@ -56,7 +56,7 @@ export function ContactoClient({ site, contacto }: { site: Site; contacto: Conta
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl border border-berry/10 p-8 shadow-sm">
+            <div className="bg-white rounded-2xl border border-berry/10 p-4 sm:p-6 md:p-8 shadow-sm">
               <h2 className="font-serif text-xl font-semibold text-charcoal mb-6">
                 Envíanos un mensaje
               </h2>

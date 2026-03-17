@@ -10,12 +10,12 @@ export default async function SobreMiPage() {
   const { about, site } = await getSiteData()
   return (
     <>
-      <section className="relative py-24 md:py-32 px-6 bg-cream-light overflow-hidden">
+      <section className="relative py-16 sm:py-20 md:py-24 lg:py-32 px-4 sm:px-6 bg-cream-light overflow-hidden">
         <div className="absolute top-20 right-0 w-96 h-96 blob bg-dusty-rose/20" />
         <div className="max-w-6xl mx-auto relative z-10">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
+          <div className="grid md:grid-cols-2 gap-8 sm:gap-12 md:gap-16 items-center">
             <div className="relative">
-              <div className="relative w-full max-w-md aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-soft-lg mx-auto">
+              <div className="relative w-full max-w-[280px] sm:max-w-md aspect-[4/5] rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-soft-lg mx-auto">
                 {(about.imagenPrincipal || site.imagenPrincipal) ? (
                   <Image
                     src={about.imagenPrincipal || site.imagenPrincipal || '/images/karla.png'}
@@ -37,7 +37,7 @@ export default async function SobreMiPage() {
               <p className="text-berry font-semibold mb-4 tracking-[0.15em] uppercase text-xs">
                 Sobre mí
               </p>
-              <h1 className="font-serif text-4xl md:text-5xl font-bold text-charcoal mb-6">
+              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-charcoal mb-6">
                 {about.nombreCompleto}
               </h1>
               <p className="text-lg text-charcoal-light leading-relaxed mb-6">
@@ -55,7 +55,7 @@ export default async function SobreMiPage() {
         </div>
       </section>
 
-      <section className="relative py-24 md:py-32 px-6 bg-cream overflow-hidden">
+      <section className="relative py-16 sm:py-20 md:py-24 lg:py-32 px-4 sm:px-6 bg-cream overflow-hidden">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-serif text-2xl md:text-3xl font-bold text-charcoal mb-12 text-center">
             Mi historia y enfoque
@@ -71,7 +71,7 @@ export default async function SobreMiPage() {
         </div>
       </section>
 
-      <section className="relative py-24 md:py-32 px-6 bg-berry text-white overflow-hidden">
+      <section className="relative py-16 sm:py-20 md:py-24 lg:py-32 px-4 sm:px-6 bg-berry text-white overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute top-0 right-0 w-80 h-80 blob bg-white/5" />
         </div>

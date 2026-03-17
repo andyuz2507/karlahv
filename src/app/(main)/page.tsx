@@ -13,11 +13,11 @@ export default async function HomePage() {
   return (
     <>
       {/* 1. Hola soy Karla */}
-      <section className="relative min-h-[90vh] flex flex-col lg:flex-row overflow-hidden">
+      <section className="relative min-h-[70vh] sm:min-h-[80vh] lg:min-h-[90vh] flex flex-col lg:flex-row overflow-hidden">
         <div className="lg:w-[45%] relative min-h-[50vh] lg:min-h-[90vh] order-2 lg:order-1">
           <div className="absolute inset-0 bg-gradient-to-br from-dusty-rose/30 via-cream-light to-peach/20" />
-          <div className="absolute inset-0 flex items-center justify-center p-12">
-            <div className="relative w-full max-w-md aspect-[3/4] rounded-[2.5rem] overflow-hidden shadow-soft-lg">
+          <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-6 md:p-12">
+            <div className="relative w-full max-w-[280px] sm:max-w-md aspect-[3/4] rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-soft-lg">
               <Image
                 src={site.imagenPrincipal || '/images/karla.png'}
                 alt={about.nombreCompleto}
@@ -32,13 +32,13 @@ export default async function HomePage() {
           </div>
         </div>
 
-        <div className="lg:w-[55%] relative flex items-center py-16 lg:py-24 px-6 sm:px-12 lg:px-16 xl:px-24 order-1 lg:order-2 bg-cream">
+        <div className="lg:w-[55%] relative flex items-center py-12 sm:py-16 lg:py-24 px-4 sm:px-6 md:px-12 lg:px-16 xl:px-24 order-1 lg:order-2 bg-cream">
           <div className="absolute top-20 right-0 w-80 h-80 blob bg-dusty-rose/15 -z-0" />
           <div className="relative z-10 max-w-xl">
             <p className="text-berry font-medium mb-6 tracking-[0.2em] uppercase text-xs">
               {site.title}
             </p>
-            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-charcoal leading-[1.1] mb-6">
+            <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-charcoal leading-[1.1] mb-6">
               Hola, soy {about.nombreCompleto}
             </h1>
             <p className="text-lg text-charcoal-light leading-relaxed mb-8">
@@ -63,12 +63,12 @@ export default async function HomePage() {
       <CurveDivider variant="cream" />
 
       {/* 2. Servicios - 3 columnas, visual, sin scroll */}
-      <section className="relative py-16 md:py-20 px-6 bg-cream overflow-hidden min-h-[80vh] flex flex-col justify-center">
+      <section className="relative py-12 sm:py-16 md:py-20 px-4 sm:px-6 bg-cream overflow-hidden min-h-0 lg:min-h-[80vh] flex flex-col justify-center">
         <div className="max-w-6xl mx-auto w-full">
           <p className="text-berry font-medium mb-4 tracking-[0.15em] uppercase text-xs">
             Lo que ofrezco
           </p>
-          <h2 className="font-serif text-3xl md:text-4xl font-bold text-charcoal mb-12">
+          <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-charcoal mb-8 sm:mb-12">
             Servicios para ti y tu familia
           </h2>
           <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
@@ -115,18 +115,18 @@ export default async function HomePage() {
       <CurveDivider variant="cream-light" />
 
       {/* 3. Da el primer paso - texto izquierda, calendario derecha */}
-      <section className="relative py-20 md:py-28 px-6 bg-berry text-white overflow-hidden">
+      <section className="relative py-16 sm:py-20 md:py-28 px-4 sm:px-6 bg-berry text-white overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute top-0 left-1/4 w-96 h-96 blob bg-white/5" />
           <div className="absolute bottom-0 right-1/4 w-80 h-80 blob-2 bg-dusty-rose/15" />
         </div>
         <div className="max-w-6xl mx-auto relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-start">
             <div className="text-center lg:text-left">
               <p className="text-dusty-rose font-semibold mb-4 tracking-[0.2em] uppercase text-xs">
                 Consulta gratuita
               </p>
-              <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+              <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">
                 Da el primer paso
               </h2>
               <p className="text-cream-light/90 text-lg mb-8 leading-relaxed">
@@ -155,9 +155,9 @@ export default async function HomePage() {
       <RecursosCarousel recursos={recursos} cursos={cursos} />
 
       {/* Newsletter */}
-      <section id="newsletter" className="relative py-24 md:py-32 px-6 bg-cream-light overflow-hidden">
+      <section id="newsletter" className="relative py-16 sm:py-20 md:py-24 lg:py-32 px-4 sm:px-6 bg-cream-light overflow-hidden">
         <div className="max-w-2xl mx-auto">
-          <div className="relative bg-white rounded-[2rem] p-10 md:p-12 shadow-soft-lg border border-berry/5 overflow-hidden">
+          <div className="relative bg-white rounded-[2rem] p-6 sm:p-8 md:p-10 lg:p-12 shadow-soft-lg border border-berry/5 overflow-hidden">
             <div className="absolute top-6 right-6 w-20 h-20 rounded-full bg-berry/90 flex items-center justify-center">
               <span className="text-white text-[9px] font-bold tracking-wider">GRATIS</span>
             </div>

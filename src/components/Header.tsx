@@ -19,10 +19,10 @@ export function Header({ pageVisibility }: { pageVisibility: PageVisibility }) {
 
   return (
     <header className="sticky top-0 z-50 bg-cream/90 backdrop-blur-md border-b border-berry/5">
-      <div className="max-w-7xl mx-auto py-5 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto py-3 sm:py-4 md:py-5 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         <Link
           href="/"
-          className="font-serif text-xl md:text-2xl font-semibold text-berry hover:text-berry-dark transition-colors"
+          className="font-serif text-lg sm:text-xl md:text-2xl font-semibold text-berry hover:text-berry-dark transition-colors"
         >
           Karla Hernández Villalobos
         </Link>
@@ -63,7 +63,7 @@ export function Header({ pageVisibility }: { pageVisibility: PageVisibility }) {
       </div>
 
       {isOpen && (
-        <div className="lg:hidden border-t border-berry/10 bg-cream-light/95 backdrop-blur-md py-6 px-6">
+        <div className="lg:hidden border-t border-berry/10 bg-cream-light/95 backdrop-blur-md py-4 px-4 sm:py-6 sm:px-6">
           <nav className="flex flex-col gap-5">
             {navLinks.map((link) => (
               <Link
