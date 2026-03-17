@@ -215,7 +215,7 @@ function ReservaFormulario({
     }
   }
 
-  const inputClass = 'w-full px-3 py-2 text-base rounded-lg border border-berry/20 focus:ring-2 focus:ring-berry/30'
+  const inputClass = 'w-full px-3 py-2 text-base rounded-lg border border-berry/20 focus:ring-2 focus:ring-berry/30 text-charcoal bg-white placeholder:text-charcoal-light'
 
   useLayoutEffect(() => {
     const prev = document.body.style.overflow
@@ -225,48 +225,48 @@ function ReservaFormulario({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-charcoal/50 overflow-y-auto overflow-x-hidden">
-      <div className="bg-white rounded-xl shadow-soft-lg w-full max-w-[min(28rem,calc(100vw-2rem))] my-auto shrink-0 touch-manipulation">
-        <div className="p-4 border-b border-berry/10 flex justify-between items-center gap-2">
-          <h3 className="font-serif text-base font-bold text-charcoal truncate">Solicitar reserva: {slot.label}</h3>
-          <button onClick={onClose} className="text-charcoal-light hover:text-charcoal text-xl shrink-0">×</button>
+      <div className="bg-white rounded-xl shadow-soft-lg w-full max-w-[min(24rem,calc(100vw-2rem))] my-auto shrink-0 touch-manipulation text-charcoal">
+        <div className="p-3 border-b border-berry/10 flex justify-between items-center gap-2">
+          <h3 className="font-serif text-sm font-bold text-charcoal truncate">Solicitar reserva: {slot.label}</h3>
+          <button onClick={onClose} className="text-charcoal-light hover:text-charcoal text-lg shrink-0">×</button>
         </div>
-        <form onSubmit={handleSubmit} className="p-4 space-y-3">
+        <form onSubmit={handleSubmit} className="p-3 space-y-2">
           <div>
-            <label className="block text-sm font-medium text-charcoal mb-0.5">Nombre *</label>
+            <label className="block text-xs font-medium text-charcoal mb-0.5">Nombre *</label>
             <input type="text" required value={form.nombre} onChange={(e) => setForm({ ...form, nombre: e.target.value })} className={inputClass} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-charcoal mb-0.5">Celular *</label>
+            <label className="block text-xs font-medium text-charcoal mb-0.5">Celular *</label>
             <input type="tel" required value={form.celular} onChange={(e) => setForm({ ...form, celular: e.target.value })} className={inputClass} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-charcoal mb-0.5">Correo *</label>
+            <label className="block text-xs font-medium text-charcoal mb-0.5">Correo *</label>
             <input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={inputClass} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-charcoal mb-0.5">¿Para quién es la terapia? *</label>
+            <label className="block text-xs font-medium text-charcoal mb-0.5">¿Para quién es la terapia? *</label>
             <input type="text" required placeholder="Ej: mi hijo, yo mismo" value={form.paraQuien} onChange={(e) => setForm({ ...form, paraQuien: e.target.value })} className={inputClass} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-charcoal mb-0.5">Breve descripción *</label>
+            <label className="block text-xs font-medium text-charcoal mb-0.5">Breve descripción *</label>
             <textarea required rows={2} placeholder="Cuéntanos brevemente qué te motiva" value={form.descripcion} onChange={(e) => setForm({ ...form, descripcion: e.target.value })} className={inputClass} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-charcoal mb-0.5">Modalidad *</label>
+            <label className="block text-xs font-medium text-charcoal mb-0.5">Modalidad *</label>
             <select value={form.modalidad} onChange={(e) => setForm({ ...form, modalidad: e.target.value as 'fisico' | 'remoto' })} className={inputClass}>
               <option value="fisico">Presencial</option>
               <option value="remoto">Remoto</option>
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-charcoal mb-0.5">Temporalidad *</label>
+            <label className="block text-xs font-medium text-charcoal mb-0.5">Temporalidad *</label>
             <select value={form.temporalidad} onChange={(e) => setForm({ ...form, temporalidad: e.target.value as 'semanal' | 'quincenal' })} className={inputClass}>
               <option value="semanal">Semanal</option>
               <option value="quincenal">Quincenal</option>
             </select>
           </div>
           {error && <p className="text-red-600 text-sm">{error}</p>}
-          <button type="submit" disabled={sending} className="w-full py-2.5 rounded-lg bg-berry text-white font-semibold hover:bg-berry-dark disabled:opacity-50 text-sm">
+          <button type="submit" disabled={sending} className="w-full py-2 rounded-lg bg-berry text-white font-semibold hover:bg-berry-dark disabled:opacity-50 text-sm">
             {sending ? 'Enviando...' : 'Enviar solicitud'}
           </button>
         </form>
