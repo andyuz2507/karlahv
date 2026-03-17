@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
+import { supabase } from '@/lib/supabase'
 import { verifyPassword, createToken, setAuthCookie } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
@@ -14,10 +14,31 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email: email.trim().toLowerCase() },
-    })
+    const emailNorm = email.trim().toLowerCase()
 
+    // Login vía Supabase (HTTP, sin conexión directa a DB - funciona en Vercel)
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Configuración incompleta' },
+        { status: 500 }
+      )
+    }
+
+    const { data: users, error } = await supabase
+      .from('User')
+      .select('id, email, password')
+      .eq('email', emailNorm)
+      .limit(1)
+
+    if (error) {
+      console.error('Supabase login error:', error)
+      return NextResponse.json(
+        { error: 'Error al conectar' },
+        { status: 500 }
+      )
+    }
+
+    const user = users?.[0]
     if (!user || !(await verifyPassword(password, user.password))) {
       return NextResponse.json(
         { error: 'Credenciales incorrectas' },
