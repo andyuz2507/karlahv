@@ -21,9 +21,20 @@ export function AgendaCalendario() {
     fetch(`/api/availability?week=${weekStart}`)
       .then((r) => r.json())
       .then((data) => {
-        if (data.available) setSlots(data.available)
-        else setSlots([])
+        if (data.error) {
+          console.error('Availability error:', data.error)
+          setSlots([])
+          return
+        }
+        if (Array.isArray(data.available)) {
+          setSlots(data.available)
+        } else if (Array.isArray(data)) {
+          setSlots([])
+        } else {
+          setSlots(data.available || [])
+        }
       })
+      .catch(() => setSlots([]))
       .finally(() => setLoading(false))
   }, [weekStart])
 
@@ -76,20 +87,30 @@ export function AgendaCalendario() {
         {loading ? (
           <p className="text-charcoal-light">Cargando espacios...</p>
         ) : slots.length === 0 ? (
-          <p className="text-charcoal-light">
-            No hay espacios disponibles esta semana. Configura la agenda en el panel de administración.
-          </p>
+          <div className="space-y-2">
+            <p className="text-charcoal-light">
+              No hay espacios disponibles esta semana.
+            </p>
+            <p className="text-sm text-charcoal-light">
+              Si eres la administradora, ve a <strong>Panel → Agenda y espacios</strong> para marcar los horarios libres (semanal o quincenal).
+            </p>
+          </div>
         ) : (
-          <div className="flex flex-wrap gap-2">
-            {slots.map((s) => (
-              <button
-                key={`${s.date}-${s.time}`}
-                onClick={() => setSelected(s)}
-                className="px-4 py-2 rounded-xl bg-berry/90 hover:bg-berry text-white text-sm font-medium transition-colors"
-              >
-                {s.label}
-              </button>
-            ))}
+          <div className="space-y-4">
+            <p className="text-sm text-charcoal-light">
+              Espacios en verde disponibles. Haz clic para solicitar reserva:
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {slots.map((s) => (
+                <button
+                  key={`${s.date}-${s.time}`}
+                  onClick={() => setSelected(s)}
+                  className="px-4 py-2.5 rounded-xl bg-green-600 hover:bg-green-700 text-white text-sm font-medium transition-colors shadow-sm"
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
           </div>
         )}
       </div>

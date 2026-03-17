@@ -38,13 +38,15 @@ model File {
 
 // Espacios disponibles recurrentes (semanal o quincenal)
 model AvailabilitySlot {
-  id         String   @id @default(cuid())
-  dayOfWeek  Int      // 0=domingo, 1=lunes, ..., 6=sábado
-  startTime  String   // "09:00"
-  endTime    String   // "10:00"
-  frequency  String   // "weekly" | "biweekly"
-  biweekGroup Int?    // 0 o 1 para quincenal (semana par/impar del año)
-  createdAt  DateTime @default(now())
+  id          String   @id @default(cuid())
+  dayOfWeek   Int      @map("day_of_week")  // 0=domingo, 1=lunes, ..., 6=sábado
+  startTime   String   @map("start_time")   // "09:00"
+  endTime     String   @map("end_time")     // "10:00"
+  frequency   String   // "weekly" | "biweekly"
+  biweekGroup Int?     @map("biweek_group") // 0 o 1 para quincenal
+  createdAt   DateTime @default(now())      @map("created_at")
+
+  @@map("availability_slot")
 }
 
 // Solicitudes de reserva de clientes potenciales
@@ -53,13 +55,15 @@ model BookingRequest {
   nombre      String
   celular     String
   email       String
-  paraQuien   String   // para quién es la terapia
+  paraQuien   String   @map("para_quien")
   descripcion String
-  modalidad   String   // "fisico" | "remoto"
-  temporalidad String  // "semanal" | "quincenal"
-  slotDate    String   // "2025-03-17"
-  slotTime    String   // "09:00"
-  status      String   @default("pendiente") // pendiente, contactado, agendada, cancelada
-  notas       String?  // notas internas para follow-up
-  createdAt   DateTime @default(now())
+  modalidad   String
+  temporalidad String
+  slotDate    String   @map("slot_date")
+  slotTime    String   @map("slot_time")
+  status      String   @default("pendiente")
+  notas       String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("booking_request")
 }

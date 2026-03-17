@@ -8,8 +8,7 @@ export function getAvailableSlotsForWeek(
   const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
 
   for (let d = 0; d < 7; d++) {
-    const date = new Date(weekStart)
-    date.setDate(date.getDate() + d)
+    const date = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + d)
     const dayOfWeek = date.getDay()
     const weekNum = getWeekOfYear(date)
     const biweekGroup = weekNum % 2
