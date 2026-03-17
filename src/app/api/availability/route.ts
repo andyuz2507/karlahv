@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
 import { getAuthFromCookie } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
@@ -94,6 +95,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await supabase
       .from('availability_slot')
       .insert({
+        id: randomUUID(),
         day_of_week: Number(dayOfWeek),
         start_time: String(startTime),
         end_time: String(endTime),
