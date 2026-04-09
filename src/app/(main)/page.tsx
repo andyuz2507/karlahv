@@ -184,7 +184,7 @@ export default async function HomePage() {
         {/* Large background typography */}
         <div className="absolute inset-0 flex items-center justify-start pointer-events-none overflow-hidden">
           <p className="font-serif font-bold text-white/[0.025] leading-none text-[18vw] whitespace-nowrap pl-4 select-none">
-            PRIMERA CONSULTA GRATUITA
+            TU ESPACIO FIJO DE TERAPIA
           </p>
         </div>
 
@@ -196,37 +196,62 @@ export default async function HomePage() {
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
             <div>
-              <p className="eyebrow-light">Consulta gratuita</p>
+              <p className="eyebrow-light">Así comenzamos</p>
 
               <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold leading-[0.95] mb-6 sm:mb-8">
-                Da el<br />primer<br />paso.
+                Elige el horario<br />que será tuyo.
               </h2>
 
-              <div className="w-14 h-0.5 bg-berry mb-6 sm:mb-8" />
+              <div className="w-14 h-0.5 bg-berry mb-8" />
 
-              <p className="text-white/70 text-base sm:text-lg mb-10 leading-relaxed max-w-md">
-                Ya seas nueva en terapia o busques acompañamiento para esta etapa,
-                una consulta de{' '}
-                <span className="text-dusty-rose font-semibold">{site.consultaDuracion}</span>{' '}
-                nos permite conocernos y ver si encajamos.
-              </p>
+              {/* Steps */}
+              <ol className="space-y-6 mb-10">
+                <li className="flex gap-4 items-start">
+                  <span className="flex-shrink-0 w-7 h-7 rounded-full bg-berry flex items-center justify-center text-white text-xs font-bold mt-0.5">1</span>
+                  <div>
+                    <p className="text-white font-semibold mb-1">Marca el espacio que te interesa</p>
+                    <p className="text-white/55 text-sm leading-relaxed">
+                      Selecciona el horario en el que podrías verte semana a semana —o cada dos semanas— para tu proceso terapéutico.
+                    </p>
+                  </div>
+                </li>
+                <li className="flex gap-4 items-start">
+                  <span className="flex-shrink-0 w-7 h-7 rounded-full bg-berry flex items-center justify-center text-white text-xs font-bold mt-0.5">2</span>
+                  <div>
+                    <p className="text-white font-semibold mb-1">Me pongo en contacto contigo</p>
+                    <p className="text-white/55 text-sm leading-relaxed">
+                      Te escribo para agendar una llamada de{' '}
+                      <span className="text-dusty-rose font-semibold">15-20 minutos</span>{' '}
+                      sin costo, donde nos conocemos, alineamos expectativas y confirmo que el espacio es para ti.
+                    </p>
+                  </div>
+                </li>
+                <li className="flex gap-4 items-start">
+                  <span className="flex-shrink-0 w-7 h-7 rounded-full bg-berry flex items-center justify-center text-white text-xs font-bold mt-0.5">3</span>
+                  <div>
+                    <p className="text-white font-semibold mb-1">Ese horario es tuyo</p>
+                    <p className="text-white/55 text-sm leading-relaxed">
+                      Si encajamos, reservamos el espacio de forma fija —semanal o quincenal— y comenzamos el trabajo juntos.
+                    </p>
+                  </div>
+                </li>
+              </ol>
 
               <Link
                 href="/agenda"
                 className="inline-flex items-center gap-3 bg-berry text-white px-10 py-5 rounded-full font-semibold hover:bg-berry-dark transition-all duration-300 shadow-berry-glow hover:shadow-[0_12px_40px_-4px_rgba(127,51,78,0.7)] hover:-translate-y-1 group"
               >
-                Reservar mi consulta
+                Ver horarios disponibles
                 <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </Link>
 
-              {/* Trust signal */}
-              <p className="mt-6 text-white/40 text-sm flex items-center gap-2">
-                <svg className="w-4 h-4 text-berry" fill="currentColor" viewBox="0 0 20 20">
+              <p className="mt-6 text-white/35 text-sm flex items-center gap-2">
+                <svg className="w-4 h-4 text-berry flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
-                Sin costo · Sin compromiso
+                La llamada de conocernos no tiene costo ni compromiso
               </p>
             </div>
 
