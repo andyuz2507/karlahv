@@ -15,43 +15,46 @@ export default async function HomePage() {
       {/* ─── 1. HERO ─── */}
       <section className="relative flex flex-col lg:flex-row min-h-[100svh] overflow-hidden">
 
-        {/* Left: full-bleed photo */}
-        <div className="lg:w-[48%] relative min-h-[55vw] sm:min-h-[60vh] lg:min-h-[100svh] order-2 lg:order-1 bg-ink">
-          {site.imagenPrincipal || true ? (
+        {/* Left: photo — constrained, not full-bleed */}
+        <div className="lg:w-[38%] relative order-2 lg:order-1 bg-off-white flex items-end justify-center pt-0 pb-0 lg:pb-0 overflow-hidden">
+          {/* Soft tinted background behind photo */}
+          <div className="absolute inset-0 bg-gradient-to-br from-dusty-rose/15 via-cream to-sand/30" />
+
+          {/* Photo — bottom-anchored portrait, slightly cropped at top on smaller screens */}
+          <div className="relative w-full h-full min-h-[50vw] lg:min-h-[100svh]">
             <Image
               src={site.imagenPrincipal || '/images/karla.png'}
               alt={about.nombreCompleto}
               fill
               className="object-cover object-top"
-              sizes="(max-width: 1024px) 100vw, 48vw"
+              sizes="(max-width: 1024px) 100vw, 38vw"
               priority
               unoptimized={site.imagenPrincipal?.startsWith('http')}
             />
-          ) : null}
-          {/* Gradient overlays for depth */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-off-white/5 pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink/50 via-transparent to-transparent pointer-events-none" />
+            {/* Subtle vignette at bottom */}
+            <div className="absolute inset-0 bg-gradient-to-t from-off-white/60 via-transparent to-transparent pointer-events-none" />
+          </div>
 
           {/* Bottom label */}
-          <div className="absolute bottom-8 left-8 right-8 hidden lg:block">
-            <p className="text-white/50 text-[10px] font-sans tracking-[0.35em] uppercase">
+          <div className="absolute bottom-6 left-6 hidden lg:block">
+            <p className="text-charcoal-light/40 text-[10px] font-sans tracking-[0.35em] uppercase">
               {site.title}
             </p>
           </div>
         </div>
 
-        {/* Right: editorial content */}
-        <div className="lg:w-[52%] relative flex flex-col justify-center bg-off-white py-14 sm:py-16 lg:py-0 px-6 sm:px-10 lg:px-14 xl:px-20 order-1 lg:order-2">
+        {/* Right: editorial content — more space, more weight */}
+        <div className="lg:w-[62%] relative flex flex-col justify-center bg-off-white py-14 sm:py-16 lg:py-0 px-6 sm:px-10 lg:px-14 xl:px-20 order-1 lg:order-2">
 
           {/* Decorative monogram — hidden on mobile */}
           <span className="absolute bottom-6 right-6 font-serif text-[140px] leading-none font-bold text-sand select-none pointer-events-none hidden xl:block">
             KHV
           </span>
 
-          <div className="relative z-10 max-w-xl">
+          <div className="relative z-10 max-w-2xl">
             <p className="eyebrow">Psicóloga Integrativa</p>
 
-            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-ink leading-[0.93] mb-6 sm:mb-8">
+            <h1 className="font-serif text-5xl sm:text-6xl lg:text-6xl xl:text-7xl font-bold text-ink leading-[0.93] mb-6 sm:mb-8">
               Hola,<br />
               soy {about.nombreCompleto?.split(' ')[0]}<br />
               <span className="text-berry">{about.nombreCompleto?.split(' ').slice(1).join(' ')}</span>
@@ -59,13 +62,31 @@ export default async function HomePage() {
 
             <div className="w-14 h-0.5 bg-berry mb-6 sm:mb-8" />
 
-            <p className="text-charcoal-light text-base sm:text-lg leading-relaxed mb-4 max-w-md">
+            <p className="text-charcoal-light text-base sm:text-lg leading-relaxed mb-4 max-w-lg">
               {about.bioCorta}
             </p>
-            <p className="text-charcoal-light/80 text-sm sm:text-base leading-relaxed mb-8 sm:mb-10 max-w-md">
+            <p className="text-charcoal-light/80 text-sm sm:text-base leading-relaxed mb-8 sm:mb-10 max-w-lg">
               Creo en que los papás formen parte activa del proceso. Por eso trabajo
               de cerca con las familias para que las herramientas se lleven a casa.
             </p>
+
+            {/* Quick stats */}
+            <div className="flex gap-8 mb-8 sm:mb-10">
+              <div>
+                <p className="font-serif text-3xl font-bold text-ink">10+</p>
+                <p className="text-xs text-charcoal-light/70 tracking-wide mt-0.5">años de experiencia</p>
+              </div>
+              <div className="w-px bg-sand" />
+              <div>
+                <p className="font-serif text-3xl font-bold text-ink">3</p>
+                <p className="text-xs text-charcoal-light/70 tracking-wide mt-0.5">enfoques integrativos</p>
+              </div>
+              <div className="w-px bg-sand" />
+              <div>
+                <p className="font-serif text-3xl font-bold text-berry">∞</p>
+                <p className="text-xs text-charcoal-light/70 tracking-wide mt-0.5">familias acompañadas</p>
+              </div>
+            </div>
 
             <div className="flex flex-wrap gap-4">
               <Link href="/agenda" className="btn-primary">
