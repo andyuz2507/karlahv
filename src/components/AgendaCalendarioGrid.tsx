@@ -70,24 +70,25 @@ export function AgendaCalendarioGrid({ variant = 'light', compact = false }: Pro
   const isLight = variant === 'light'
 
   return (
-    <div className={isLight ? 'bg-white' : 'bg-berry/10 rounded-2xl p-3 md:p-4'}>
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-        <h2 className={`font-serif text-sm sm:text-base font-semibold ${isLight ? 'text-charcoal' : 'text-white'}`}>
+    <div className={isLight ? 'bg-white' : 'bg-white/5 rounded-2xl p-4 md:p-5'}>
+      {/* Header: title + week navigation */}
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <h2 className={`font-serif text-base font-semibold ${isLight ? 'text-charcoal' : 'text-white'}`}>
           Selecciona un espacio disponible
         </h2>
-        <div className="flex items-center gap-1 sm:gap-2">
+        <div className="flex items-center gap-2">
           <button
             onClick={prevWeek}
-            className={`p-1.5 sm:p-2 rounded-lg ${isLight ? 'border border-berry/20 hover:bg-berry/10 text-charcoal' : 'bg-white/20 hover:bg-white/30 text-white'}`}
+            className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isLight ? 'border border-berry/20 hover:bg-berry/10 text-charcoal' : 'bg-white/15 hover:bg-white/25 text-white'}`}
           >
             ←
           </button>
-          <span className={`px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-medium min-w-[100px] sm:min-w-[140px] text-center ${isLight ? 'text-charcoal' : 'text-white'}`}>
+          <span className={`text-xs font-medium min-w-[120px] text-center ${isLight ? 'text-charcoal' : 'text-white'}`}>
             {weekLabel()}
           </span>
           <button
             onClick={nextWeek}
-            className={`p-1.5 sm:p-2 rounded-lg ${isLight ? 'border border-berry/20 hover:bg-berry/10 text-charcoal' : 'bg-white/20 hover:bg-white/30 text-white'}`}
+            className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isLight ? 'border border-berry/20 hover:bg-berry/10 text-charcoal' : 'bg-white/15 hover:bg-white/25 text-white'}`}
           >
             →
           </button>
@@ -95,61 +96,62 @@ export function AgendaCalendarioGrid({ variant = 'light', compact = false }: Pro
       </div>
 
       {loading ? (
-        <p className={`text-sm ${isLight ? 'text-charcoal-light' : 'text-white/80'}`}>Cargando...</p>
+        <p className={`text-sm py-8 text-center ${isLight ? 'text-charcoal-light' : 'text-white/60'}`}>Cargando...</p>
       ) : (
-        <div className="overflow-x-auto -mx-1 touch-pan-x">
-          <div className="min-w-[240px] sm:min-w-[280px]">
-            {/* Header: days - compacto */}
-            <div className="grid grid-cols-6 gap-0.5 mb-0.5">
-              <div className={`text-[10px] sm:text-[10px] font-medium px-0.5 py-0.5 ${isLight ? 'text-charcoal-light' : 'text-white/70'}`}>
-                Hora
-              </div>
-              {weekDates.map((wd) => (
-                <div key={wd.date} className={`text-center text-[10px] font-medium px-0.5 py-0.5 ${isLight ? 'text-charcoal' : 'text-white'}`}>
-                  <div>{wd.label}</div>
-                  <div className={isLight ? 'text-charcoal-light' : 'text-white/80'}>{wd.day}</div>
-                </div>
-              ))}
+        <div className="overflow-x-auto touch-pan-x">
+          {/* Fluid grid: time column fixed, 5 day columns share remaining space */}
+          <div className="grid grid-cols-[3rem_repeat(5,1fr)] gap-1 mb-1">
+            <div className={`text-[11px] font-medium py-1 ${isLight ? 'text-charcoal-light' : 'text-white/50'}`}>
+              Hora
             </div>
-            {/* Rows: time slots - celdas más grandes en móvil */}
-            {TIME_SLOTS.map((time) => (
-              <div key={time} className="grid grid-cols-6 gap-0.5 mb-0.5">
-                <div className={`text-[10px] px-0.5 py-0.5 flex items-center h-6 sm:h-5 ${isLight ? 'text-charcoal-light' : 'text-white/80'}`}>
-                  {time}
-                </div>
-                {weekDates.map((wd) => {
-                  const isAvailable = availableSet.has(`${wd.date}-${time}`)
-                  const slot = available.find((s) => s.date === wd.date && s.time === time)
-                  return (
-                    <button
-                      key={`${wd.date}-${time}`}
-                      type="button"
-                      onClick={() => handleCellClick(wd.date, time)}
-                      disabled={!isAvailable}
-                      className={`
-                        w-6 h-6 min-w-[24px] min-h-[24px] sm:w-5 sm:h-5 sm:min-w-[20px] sm:min-h-[20px] rounded-sm text-[10px] font-medium transition-colors flex items-center justify-center
-                        ${isAvailable
-                          ? 'bg-green-600 hover:bg-green-700 text-white cursor-pointer active:scale-95'
-                          : isLight
-                            ? 'bg-charcoal/10 text-charcoal/40 cursor-not-allowed'
-                            : 'bg-white/10 text-white/40 cursor-not-allowed'
-                        }
-                      `}
-                      title={isAvailable ? slot?.label : 'No disponible'}
-                    >
-                      {compact ? '' : isAvailable ? '✓' : '—'}
-                    </button>
-                  )
-                })}
+            {weekDates.map((wd) => (
+              <div key={wd.date} className={`text-center py-1 ${isLight ? 'text-charcoal' : 'text-white'}`}>
+                <div className="text-[11px] font-semibold">{wd.label}</div>
+                <div className={`text-xs font-bold ${isLight ? 'text-berry' : 'text-dusty-rose'}`}>{wd.day}</div>
               </div>
             ))}
           </div>
+
+          {TIME_SLOTS.map((time) => (
+            <div key={time} className="grid grid-cols-[3rem_repeat(5,1fr)] gap-1 mb-1">
+              <div className={`text-[11px] flex items-center h-8 ${isLight ? 'text-charcoal-light' : 'text-white/60'}`}>
+                {time}
+              </div>
+              {weekDates.map((wd) => {
+                const isAvailable = availableSet.has(`${wd.date}-${time}`)
+                const slot = available.find((s) => s.date === wd.date && s.time === time)
+                return (
+                  <button
+                    key={`${wd.date}-${time}`}
+                    type="button"
+                    onClick={() => handleCellClick(wd.date, time)}
+                    disabled={!isAvailable}
+                    className={`
+                      h-8 w-full rounded-md text-[10px] font-semibold transition-all
+                      ${isAvailable
+                        ? 'bg-green-600 hover:bg-green-500 text-white cursor-pointer active:scale-95 shadow-sm'
+                        : isLight
+                          ? 'bg-charcoal/8 cursor-not-allowed'
+                          : 'bg-white/8 cursor-not-allowed'
+                      }
+                    `}
+                    title={isAvailable ? slot?.label : 'No disponible'}
+                  />
+                )
+              })}
+            </div>
+          ))}
         </div>
       )}
 
-      <p className={`mt-2 text-[10px] sm:text-[10px] ${isLight ? 'text-charcoal-light' : 'text-white/70'}`}>
-        Verde = disponible. Gris = no disponible. Haz clic en un espacio verde para reservar.
-      </p>
+      <div className={`mt-3 flex items-center gap-3 text-[11px] ${isLight ? 'text-charcoal-light' : 'text-white/50'}`}>
+        <span className="flex items-center gap-1.5">
+          <span className="inline-block w-3 h-3 rounded-sm bg-green-600" /> Disponible
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className={`inline-block w-3 h-3 rounded-sm ${isLight ? 'bg-charcoal/15' : 'bg-white/15'}`} /> No disponible
+        </span>
+      </div>
 
       {selected && (
         <ReservaFormulario
