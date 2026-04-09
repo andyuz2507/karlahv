@@ -7,29 +7,50 @@
     scroll-behavior: smooth;
   }
   body {
-    @apply text-charcoal bg-cream font-sans antialiased;
+    @apply text-charcoal bg-off-white font-sans antialiased;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center px-8 py-3.5 rounded-full font-semibold
+    @apply inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold
            bg-berry text-white hover:bg-berry-dark transition-all duration-300
-           shadow-lg shadow-berry/20 hover:shadow-xl hover:shadow-berry/25 hover:-translate-y-0.5;
+           shadow-berry-glow hover:shadow-[0_12px_40px_-4px_rgba(127,51,78,0.6)]
+           hover:-translate-y-1 active:translate-y-0;
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-8 py-3.5 rounded-full font-semibold
-           border-2 border-berry/30 text-berry hover:bg-berry/5 hover:border-berry/50
-           transition-all duration-300;
+    @apply inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold
+           border-2 border-ink/20 text-ink hover:border-berry hover:text-berry
+           transition-all duration-300 hover:-translate-y-0.5;
   }
   .btn-outline {
-    @apply inline-flex items-center justify-center px-6 py-2.5 rounded-full font-medium
-           border-2 border-dusty-rose/80 text-charcoal hover:bg-dusty-rose/20
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-medium
+           border border-white/30 text-white hover:bg-white/10 hover:border-white/60
            transition-all duration-300;
   }
-  .section-padding {
-    @apply py-12 sm:py-16 md:py-20 lg:py-28 px-4 sm:px-6 lg:px-8;
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full font-medium
+           text-charcoal-light hover:text-berry transition-colors duration-200;
   }
+  .section-padding {
+    @apply py-16 sm:py-20 md:py-24 lg:py-32 px-4 sm:px-6 lg:px-8;
+  }
+  .eyebrow {
+    @apply inline-flex items-center gap-3 text-berry font-medium text-xs tracking-[0.3em] uppercase mb-6;
+  }
+  .eyebrow::before {
+    content: '';
+    @apply block w-6 h-px bg-berry flex-shrink-0;
+  }
+  .eyebrow-light {
+    @apply inline-flex items-center gap-3 text-dusty-rose font-medium text-xs tracking-[0.3em] uppercase mb-6;
+  }
+  .eyebrow-light::before {
+    content: '';
+    @apply block w-6 h-px bg-dusty-rose flex-shrink-0;
+  }
+
+  /* Legacy blob classes kept for backwards compat */
   .blob {
     border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
     animation: blob 8s ease-in-out infinite;
@@ -59,16 +80,31 @@
 }
 
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes reveal {
+  from { opacity: 0; clip-path: inset(0 100% 0 0); }
+  to   { opacity: 1; clip-path: inset(0 0% 0 0); }
 }
 
 .animate-fade-in {
-  animation: fadeInUp 0.5s ease-out both;
+  animation: fadeInUp 0.6s ease-out both;
 }
+
+.animate-slide-up {
+  animation: slideUp 0.7s ease-out both;
+}
+
+/* Stagger utilities */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
